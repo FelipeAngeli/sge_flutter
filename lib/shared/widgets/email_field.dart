@@ -1,23 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
-  final String label;
-  final String? hint;
-  final bool obscureText;
+class EmailField extends StatelessWidget {
   final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final TextInputType? keyboardType;
-  final Widget? suffixIcon;
 
-  const CustomTextField({
+  const EmailField({
     super.key,
-    required this.label,
-    this.hint,
-    this.obscureText = false,
     required this.controller,
-    this.validator,
-    this.keyboardType,
-    this.suffixIcon,
   });
 
   @override
@@ -25,9 +13,9 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
+        const Text(
+          'Email',
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
@@ -35,12 +23,9 @@ class CustomTextField extends StatelessWidget {
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
-          obscureText: obscureText,
-          validator: validator,
-          keyboardType: keyboardType,
+          keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            hintText: hint,
-            suffixIcon: suffixIcon,
+            hintText: 'Digite seu email',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -49,6 +34,15 @@ class CustomTextField extends StatelessWidget {
               vertical: 12,
             ),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Email é obrigatório';
+            }
+            if (!value.contains('@')) {
+              return 'Email inválido';
+            }
+            return null;
+          },
         ),
       ],
     );

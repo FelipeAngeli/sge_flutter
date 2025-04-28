@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'movimento_caixa_model.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 2)
 class MovimentoCaixaModel {
   @HiveField(0)
   final String id;

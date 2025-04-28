@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 import 'relatorio_cubit.dart';
 import '../../models/movimento_caixa_model.dart';
 
@@ -36,9 +36,39 @@ class _RelatorioPageState extends State<RelatorioPage> {
                       style: TextStyle(fontSize: 18)),
                   const SizedBox(height: 20),
                   Expanded(
-                    child: charts.BarChart(
-                      _buildSeries(movimentos),
-                      animate: true,
+                    child: BarChart(
+                      BarChartData(
+                        alignment: BarChartAlignment.spaceAround,
+                        maxY: _getMaxValue(movimentos) * 1.2,
+                        barGroups: _buildBarGroups(movimentos),
+                        titlesData: FlTitlesData(
+                          show: true,
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                return Text(value == 0 ? 'Entrada' : 'Saída');
+                              },
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                return Text('R\$${value.toStringAsFixed(0)}');
+                              },
+                            ),
+                          ),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        gridData: FlGridData(show: false),
+                      ),
                     ),
                   ),
                 ],
@@ -47,7 +77,17 @@ class _RelatorioPageState extends State<RelatorioPage> {
     );
   }
 
-  List<charts.Series<MovimentoCaixaModel, String>> _buildSeries(
+  double _getMaxValue(List<MovimentoCaixaModel> movimentos) {
+    final entradas = movimentos.where((m) => m.tipo == 'entrada').toList();
+    final saidas = movimentos.where((m) => m.tipo == 'saida').toList();
+
+    double totalEntradas = entradas.fold(0, (sum, m) => sum + m.valor);
+    double totalSaidas = saidas.fold(0, (sum, m) => sum + m.valor);
+
+    return [totalEntradas, totalSaidas].reduce((a, b) => a > b ? a : b);
+  }
+
+  List<BarChartGroupData> _buildBarGroups(
       List<MovimentoCaixaModel> movimentos) {
     final entradas = movimentos.where((m) => m.tipo == 'entrada').toList();
     final saidas = movimentos.where((m) => m.tipo == 'saida').toList();
@@ -55,29 +95,28 @@ class _RelatorioPageState extends State<RelatorioPage> {
     double totalEntradas = entradas.fold(0, (sum, m) => sum + m.valor);
     double totalSaidas = saidas.fold(0, (sum, m) => sum + m.valor);
 
-    final data = [
-      MovimentoCaixaModel(
-          id: '1',
-          data: DateTime.now(),
-          valor: totalEntradas,
-          tipo: 'Entrada',
-          descricao: ''),
-      MovimentoCaixaModel(
-          id: '2',
-          data: DateTime.now(),
-          valor: totalSaidas,
-          tipo: 'Saída',
-          descricao: ''),
-    ];
-
     return [
-      charts.Series<MovimentoCaixaModel, String>(
-        id: 'Movimentos',
-        domainFn: (MovimentoCaixaModel mov, _) => mov.tipo,
-        measureFn: (MovimentoCaixaModel mov, _) => mov.valor,
-        data: data,
-        labelAccessorFn: (MovimentoCaixaModel mov, _) =>
-            'R\$${mov.valor.toStringAsFixed(2)}',
+      BarChartGroupData(
+        x: 0,
+        barRods: [
+          BarChartRodData(
+            toY: totalEntradas,
+            color: Colors.green,
+            width: 20,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ],
+      ),
+      BarChartGroupData(
+        x: 1,
+        barRods: [
+          BarChartRodData(
+            toY: totalSaidas,
+            color: Colors.red,
+            width: 20,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ],
       ),
     ];
   }

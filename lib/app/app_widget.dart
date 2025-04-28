@@ -9,6 +9,7 @@ class AppWidget extends StatelessWidget {
     return MaterialApp.router(
       title: 'SGE - Gestão Empresarial',
       theme: ThemeData.dark(useMaterial3: true),
+      debugShowCheckedModeBanner: false,
       routerConfig: Modular.routerConfig,
     );
   }

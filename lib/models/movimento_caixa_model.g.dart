@@ -8,7 +8,7 @@ part of 'movimento_caixa_model.dart';
 
 class MovimentoCaixaModelAdapter extends TypeAdapter<MovimentoCaixaModel> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
   MovimentoCaixaModel read(BinaryReader reader) {

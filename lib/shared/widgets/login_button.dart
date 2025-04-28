@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatelessWidget {
-  final String label;
+class LoginButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isLoading;
-  final Color? backgroundColor;
-  final Color? textColor;
 
-  const CustomButton({
+  const LoginButton({
     super.key,
-    required this.label,
     required this.onPressed,
     this.isLoading = false,
-    this.backgroundColor,
-    this.textColor,
   });
 
   @override
@@ -24,7 +18,7 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -38,10 +32,10 @@ class CustomButton extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               )
-            : Text(
-                label,
+            : const Text(
+                'Entrar',
                 style: TextStyle(
-                  color: textColor ?? Colors.white,
+                  color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
