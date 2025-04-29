@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    homeCubit = BlocProvider.of<HomeCubit>(context);
+    homeCubit = Modular.get<HomeCubit>(); // <-- Correção importante aqui
     homeCubit.loadHomeData(); // Carrega ao abrir a primeira vez
   }
 
@@ -33,37 +33,28 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Se quiser reload ao voltar app do background (opcional)
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // se quiser, recarrega
-  }
-
-  @override
-  void didPopNext() {
-    // Quando voltar de outra página, recarrega os dados
-    homeCubit.loadHomeData();
+    // Pode usar isso para recarregar se quiser
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const _HomeAppBar(),
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          if (state is HomeLoading) {
-            return const CustomLoadingIndicator();
-          } else if (state is HomeLoaded) {
-            return const _HomeGrid();
-          } else if (state is HomeError) {
-            return Center(child: Text(state.message));
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
+    return BlocProvider<HomeCubit>.value(
+      value: homeCubit,
+      child: Scaffold(
+        appBar: const _HomeAppBar(),
+        body: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            if (state is HomeLoading) {
+              return const CustomLoadingIndicator();
+            } else if (state is HomeLoaded) {
+              return const _HomeGrid();
+            } else if (state is HomeError) {
+              return Center(child: Text(state.message));
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
       ),
     );
   }

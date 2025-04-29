@@ -5,28 +5,28 @@ import 'produto_state.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class ProdutoCubit extends Cubit<ProdutoState> {
-  final ProdutoService _service = Modular.get<ProdutoService>();
+  final ProdutoService produtoService;
 
-  ProdutoCubit() : super(ProdutoInitial());
+  ProdutoCubit({required this.produtoService}) : super(ProdutoInitial());
 
   Future<void> loadProdutos() async {
     emit(ProdutoLoading());
-    final produtos = await _service.listarProdutos();
+    final produtos = await produtoService.listarProdutos();
     emit(ProdutoLoaded(produtos));
   }
 
   Future<void> adicionarProduto(ProdutoModel produto) async {
-    await _service.salvarProduto(produto);
+    await produtoService.adicionarProduto(produto);
     await loadProdutos();
   }
 
   Future<void> atualizarProduto(ProdutoModel produto) async {
-    await _service.atualizarProduto(produto);
+    await produtoService.atualizarProduto(produto);
     await loadProdutos();
   }
 
   Future<void> removerProduto(String id) async {
-    await _service.removerProduto(id);
+    await produtoService.removerProduto(id);
     await loadProdutos();
   }
 }

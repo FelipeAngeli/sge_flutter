@@ -1,28 +1,45 @@
-import 'package:hive/hive.dart';
-import '../../models/produto_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sge_flutter/models/produto_model.dart';
+import 'package:sge_flutter/core/storage/hive_config.dart';
 
 class ProdutoService {
-  final Box<ProdutoModel> _box;
+  final Box<ProdutoModel> _produtoBox = HiveConfig.produtoBox;
 
-  ProdutoService(this._box);
-
-  Future<void> salvarProduto(ProdutoModel produto) async {
-    await _box.put(produto.id, produto);
-  }
+  ProdutoService();
 
   Future<List<ProdutoModel>> listarProdutos() async {
-    return _box.values.toList();
+    return _produtoBox.values.toList();
+  }
+
+  Future<void> adicionarProduto(ProdutoModel produto) async {
+    await _produtoBox.put(produto.id, produto);
   }
 
   Future<ProdutoModel?> buscarProduto(String id) async {
-    return _box.get(id);
+    return _produtoBox.get(id);
   }
 
   Future<void> atualizarProduto(ProdutoModel produto) async {
-    await _box.put(produto.id, produto);
+    await _produtoBox.put(produto.id, produto);
   }
 
   Future<void> removerProduto(String id) async {
-    await _box.delete(id);
+    await _produtoBox.delete(id);
+  }
+
+  Future<void> adicionarEstoque(String produtoId, int quantidade) async {
+    final produto = _produtoBox.get(produtoId);
+    if (produto != null) {
+      produto.estoque += quantidade;
+      await _produtoBox.put(produto.id, produto);
+    }
+  }
+
+  Future<void> removerEstoque(String produtoId, int quantidade) async {
+    final produto = _produtoBox.get(produtoId);
+    if (produto != null && produto.estoque >= quantidade) {
+      produto.estoque -= quantidade;
+      await _produtoBox.put(produto.id, produto);
+    }
   }
 }

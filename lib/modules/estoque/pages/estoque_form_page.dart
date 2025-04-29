@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/estoque/cubit/estoque_cubit.dart';
-import 'package:sge_flutter/models/produto_model.dart';
-import 'package:sge_flutter/shared/widgets/custom_text_form_field.dart';
 
 class EstoqueFormPage extends StatefulWidget {
   const EstoqueFormPage({super.key});
@@ -14,17 +12,27 @@ class EstoqueFormPage extends StatefulWidget {
 
 class _EstoqueFormPageState extends State<EstoqueFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nomeController = TextEditingController();
-  final _valorController = TextEditingController();
-  final _estoqueController = TextEditingController();
+  final _produtoIdController = TextEditingController();
+  final _quantidadeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _produtoIdController.dispose();
+    _quantidadeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final cubit = BlocProvider.of<EstoqueCubit>(context);
+    final estoqueCubit = BlocProvider.of<EstoqueCubit>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Novo Produto no Estoque'),
+        title: const Text('Adicionar Estoque'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Modular.to.pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -32,67 +40,32 @@ class _EstoqueFormPageState extends State<EstoqueFormPage> {
           key: _formKey,
           child: Column(
             children: [
-              CustomTextFormField(
-                label: 'Nome do Produto',
-                controller: _nomeController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe o nome do produto';
-                  }
-                  return null;
-                },
+              TextFormField(
+                controller: _produtoIdController,
+                decoration: const InputDecoration(labelText: 'ID do Produto'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Campo obrigatório' : null,
               ),
               const SizedBox(height: 16),
-              CustomTextFormField(
-                label: 'Valor',
-                controller: _valorController,
-                prefixText: 'R\$ ',
+              TextFormField(
+                controller: _quantidadeController,
+                decoration: const InputDecoration(labelText: 'Quantidade'),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  final regex = RegExp(r'^\d+(\,\d{1,2})?$');
-                  if (value == null || value.isEmpty) {
-                    return 'Informe o valor';
-                  }
-                  if (!regex.hasMatch(value)) {
-                    return 'Informe um valor válido (ex: 10,00)';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              CustomTextFormField(
-                label: 'Quantidade em Estoque',
-                controller: _estoqueController,
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe a quantidade';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Informe um número válido';
-                  }
-                  return null;
-                },
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Campo obrigatório' : null,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    final produto = ProdutoModel(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      nome: _nomeController.text,
-                      preco: double.tryParse(
-                              _valorController.text.replaceAll(',', '.')) ??
-                          0,
-                      estoque: int.parse(_estoqueController.text),
-                      descricao: '',
-                      categoria: '',
-                    );
-                    cubit.adicionarProduto(produto);
+                    final produtoId = _produtoIdController.text;
+                    final quantidade = int.parse(_quantidadeController.text);
+                    estoqueCubit.adicionarProdutoAoEstoque(
+                        produtoId, quantidade);
                     Modular.to.pop();
                   }
                 },
-                child: const Text('Salvar Produto'),
+                child: const Text('Salvar'),
               ),
             ],
           ),

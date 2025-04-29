@@ -1,3 +1,5 @@
+// lib/modules/estoque/cubit/estoque_state.dart
+
 import 'package:sge_flutter/models/produto_model.dart';
 
 abstract class EstoqueState {}

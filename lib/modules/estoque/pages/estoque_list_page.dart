@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/estoque/cubit/estoque_cubit.dart';
 import 'package:sge_flutter/modules/estoque/cubit/estoque_state.dart';
-import 'package:sge_flutter/models/produto_model.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
 class EstoqueListPage extends StatelessWidget {
   const EstoqueListPage({super.key});
@@ -22,7 +21,9 @@ class EstoqueListPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => Modular.to.pushNamed('/estoque/form'),
+            onPressed: () {
+              Modular.to.pushNamed('/estoque/form');
+            },
           ),
         ],
       ),
@@ -31,16 +32,19 @@ class EstoqueListPage extends StatelessWidget {
           if (state is EstoqueLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is EstoqueLoaded) {
+            final produtos = state.produtos;
             return ListView.builder(
-              itemCount: state.produtos.length,
+              itemCount: produtos.length,
               itemBuilder: (context, index) {
-                final ProdutoModel produto = state.produtos[index];
+                final produto = produtos[index];
                 return ListTile(
                   title: Text(produto.nome),
                   subtitle: Text('Estoque: ${produto.estoque} unidades'),
                   trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => cubit.removerProduto(produto.id),
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () {
+                      _confirmarVenda(context, cubit, produto.id, produto.nome);
+                    },
                   ),
                 );
               },
@@ -51,6 +55,30 @@ class EstoqueListPage extends StatelessWidget {
             return const SizedBox.shrink();
           }
         },
+      ),
+    );
+  }
+
+  void _confirmarVenda(BuildContext context, EstoqueCubit cubit,
+      String produtoId, String nomeProduto) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar Venda'),
+        content: Text('Deseja vender 1 unidade de "$nomeProduto"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              cubit.venderProduto(produtoId);
+              Navigator.pop(context);
+            },
+            child: const Text('Confirmar'),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
-// lib/modules/relatorio/pages/relatorio_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import '../cubit/relatorio_cubit.dart';
 import '../cubit/relatorio_state.dart';
 
@@ -9,10 +9,12 @@ class RelatorioPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<RelatorioCubit>()..gerarRelatorio();
-
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Modular.to.navigate('/'),
+        ),
         title: const Text('Relatório de Produtos'),
       ),
       body: BlocBuilder<RelatorioCubit, RelatorioState>(

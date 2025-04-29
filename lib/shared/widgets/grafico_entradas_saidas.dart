@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:charts_painter/chart.dart';
+import 'package:sge_flutter/shared/widgets/custom_bar_chart.dart';
 
 class GraficoEntradasSaidas extends StatelessWidget {
   final double entradas;
@@ -13,36 +13,22 @@ class GraficoEntradasSaidas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chartData = ChartData(
-      [
-        [ChartItem(entradas)],
-        [ChartItem(saidas)],
-      ],
-    );
-
-    final chartState = ChartState(
-      data: chartData,
-      itemOptions: const BarItemOptions(
-        maxBarWidth: 24,
-      ),
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+    return SizedBox(
+      height: 260, // 🔥 Corrige o overflow deixando espaço fixo
       child: Column(
-        mainAxisSize: MainAxisSize.min, // 🔥 evita overflow
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 180, // 🔥 ajuste para caber o gráfico e legenda
-            child: AnimatedChart(
-              state: chartState,
-              duration: const Duration(milliseconds: 800), // Animação suave
-              curve: Curves.easeOut, // Curva de animação
-              width: double.infinity,
-              height: 180,
+          const SizedBox(height: 12),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: CustomBarChart(
+                entradas: entradas,
+                saidas: saidas,
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -50,6 +36,7 @@ class GraficoEntradasSaidas extends StatelessWidget {
               _Legenda(label: 'Saídas', color: Colors.red),
             ],
           ),
+          const SizedBox(height: 8),
         ],
       ),
     );
