@@ -7,10 +7,11 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'SGE - Gestão Empresarial',
-      theme: ThemeData.dark(useMaterial3: true),
+      title: 'SGE',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      routerDelegate: Modular.routerDelegate,
+      routeInformationParser: Modular.routeInformationParser,
       debugShowCheckedModeBanner: false,
-      routerConfig: Modular.routerConfig,
     );
   }
 }

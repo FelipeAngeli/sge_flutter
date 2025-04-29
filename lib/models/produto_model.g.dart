@@ -8,7 +8,7 @@ part of 'produto_model.dart';
 
 class ProdutoModelAdapter extends TypeAdapter<ProdutoModel> {
   @override
-  final int typeId = 1;
+  final int typeId = 0;
 
   @override
   ProdutoModel read(BinaryReader reader) {
@@ -19,26 +19,29 @@ class ProdutoModelAdapter extends TypeAdapter<ProdutoModel> {
     return ProdutoModel(
       id: fields[0] as String,
       nome: fields[1] as String,
-      descricao: fields[2] as String,
-      preco: fields[3] as double,
-      quantidade: fields[4] as int,
+      preco: fields[2] as double,
+      estoque: fields[3] as int,
+      descricao: fields[4] as String,
+      categoria: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProdutoModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.nome)
       ..writeByte(2)
-      ..write(obj.descricao)
-      ..writeByte(3)
       ..write(obj.preco)
+      ..writeByte(3)
+      ..write(obj.estoque)
       ..writeByte(4)
-      ..write(obj.quantidade);
+      ..write(obj.descricao)
+      ..writeByte(5)
+      ..write(obj.categoria);
   }
 
   @override

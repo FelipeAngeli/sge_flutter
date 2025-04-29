@@ -2,19 +2,19 @@ import 'package:hive/hive.dart';
 
 part 'usuario_model.g.dart';
 
-@HiveType(typeId: 0)
-class UsuarioModel {
+@HiveType(typeId: 2)
+class UsuarioModel extends HiveObject {
   @HiveField(0)
-  final String id;
+  late String id;
 
   @HiveField(1)
-  final String nome;
+  late String nome;
 
   @HiveField(2)
-  final String email;
+  late String email;
 
   @HiveField(3)
-  final String senha;
+  late String senha;
 
   UsuarioModel({
     required this.id,

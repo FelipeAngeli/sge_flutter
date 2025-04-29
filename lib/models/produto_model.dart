@@ -2,28 +2,43 @@ import 'package:hive/hive.dart';
 
 part 'produto_model.g.dart';
 
-@HiveType(typeId: 1)
-class ProdutoModel {
+@HiveType(typeId: 0)
+class ProdutoModel extends HiveObject {
   @HiveField(0)
-  final String id;
+  late String id;
 
   @HiveField(1)
-  final String nome;
+  late String nome;
 
   @HiveField(2)
-  final String descricao;
+  late double preco;
 
   @HiveField(3)
-  final double preco;
+  late int estoque;
 
   @HiveField(4)
-  final int quantidade;
+  late String descricao;
+
+  @HiveField(5)
+  late String categoria;
 
   ProdutoModel({
     required this.id,
     required this.nome,
-    required this.descricao,
     required this.preco,
-    required this.quantidade,
+    required this.estoque,
+    required this.descricao,
+    required this.categoria,
   });
+
+  factory ProdutoModel.create({required String nome, required double preco}) {
+    return ProdutoModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      nome: nome,
+      preco: preco,
+      estoque: 0,
+      descricao: '',
+      categoria: '',
+    );
+  }
 }

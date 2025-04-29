@@ -2,22 +2,22 @@ import 'package:hive/hive.dart';
 
 part 'movimento_caixa_model.g.dart';
 
-@HiveType(typeId: 2)
-class MovimentoCaixaModel {
+@HiveType(typeId: 1)
+class MovimentoCaixaModel extends HiveObject {
   @HiveField(0)
-  final String id;
+  late String id;
 
   @HiveField(1)
-  final DateTime data;
+  late DateTime data;
 
   @HiveField(2)
-  final double valor;
+  late double valor;
 
   @HiveField(3)
-  final String tipo; // "entrada" ou "saida"
+  late String tipo; // entrada ou saída
 
   @HiveField(4)
-  final String descricao;
+  late String descricao;
 
   MovimentoCaixaModel({
     required this.id,
