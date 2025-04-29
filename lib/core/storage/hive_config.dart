@@ -11,6 +11,8 @@ class HiveConfig {
     Hive.registerAdapter(ProdutoModelAdapter());
     Hive.registerAdapter(MovimentoCaixaModelAdapter());
 
+    await Hive.deleteBoxFromDisk('produtos');
+
     await Hive.openBox<ProdutoModel>('produtos');
     await Hive.openBox<MovimentoCaixaModel>('movimentos');
 

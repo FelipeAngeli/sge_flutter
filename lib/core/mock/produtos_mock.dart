@@ -12,6 +12,7 @@ class ProdutosMock {
         estoque: 20,
         descricao: 'Camiseta básica de algodão',
         categoria: 'Roupas',
+        vendas: 0,
       ),
       ProdutoModel(
         id: (timestamp + 1).toString(),
@@ -20,6 +21,7 @@ class ProdutosMock {
         estoque: 15,
         descricao: 'Calça jeans azul tradicional',
         categoria: 'Roupas',
+        vendas: 2,
       ),
       ProdutoModel(
         id: (timestamp + 2).toString(),
@@ -28,6 +30,7 @@ class ProdutosMock {
         estoque: 10,
         descricao: 'Tênis confortável para corrida',
         categoria: 'Calçados',
+        vendas: 5,
       ),
     ];
   }

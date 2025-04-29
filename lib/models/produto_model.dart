@@ -22,6 +22,9 @@ class ProdutoModel extends HiveObject {
   @HiveField(5)
   late String categoria;
 
+  @HiveField(6)
+  late int vendas;
+
   ProdutoModel({
     required this.id,
     required this.nome,
@@ -29,6 +32,7 @@ class ProdutoModel extends HiveObject {
     required this.estoque,
     required this.descricao,
     required this.categoria,
+    required this.vendas,
   });
 
   factory ProdutoModel.create({required String nome, required double preco}) {
@@ -39,6 +43,7 @@ class ProdutoModel extends HiveObject {
       estoque: 0,
       descricao: '',
       categoria: '',
+      vendas: 0,
     );
   }
 }

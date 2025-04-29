@@ -23,6 +23,7 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
   final _quantidadeController = TextEditingController();
   final _descricaoController = TextEditingController();
   final _categoriaController = TextEditingController();
+  final _vendasController = TextEditingController();
 
   ProdutoModel? produto;
   bool _formValid = false;
@@ -38,6 +39,7 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
       _quantidadeController.text = produto!.estoque.toString();
       _descricaoController.text = produto!.descricao;
       _categoriaController.text = produto!.categoria;
+      _vendasController.text = produto!.vendas.toString();
     }
   }
 
@@ -55,6 +57,7 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
     _quantidadeController.dispose();
     _descricaoController.dispose();
     _categoriaController.dispose();
+    _vendasController.dispose();
     super.dispose();
   }
 
@@ -112,6 +115,14 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
               ),
               const SizedBox(height: 16),
               CategoriaDropdown(controller: _categoriaController),
+              const SizedBox(height: 16),
+              CustomTextField(
+                label: 'Vendas',
+                controller: _vendasController,
+                keyboardType: TextInputType.number,
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Campo obrigatório' : null,
+              ),
               const SizedBox(height: 32),
               PrimaryButton(
                 label: 'Salvar Produto',
@@ -127,6 +138,7 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                       estoque: int.tryParse(_quantidadeController.text) ?? 0,
                       descricao: _descricaoController.text,
                       categoria: _categoriaController.text,
+                      vendas: int.tryParse(_vendasController.text) ?? 0,
                     );
 
                     if (produto == null) {
