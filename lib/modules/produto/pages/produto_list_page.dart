@@ -20,7 +20,7 @@ class ProdutoListPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              Modular.to.pushNamed('/produtos/form');
+              Modular.to.pushNamed('/produtos/adicionarProduto');
             },
           ),
         ],
@@ -49,7 +49,8 @@ class ProdutoListPage extends StatelessWidget {
                   title: Text(produto.nome),
                   subtitle: Text('R\$ ${produto.preco.toStringAsFixed(2)}'),
                   onTap: () {
-                    Modular.to.pushNamed('/produtos/form', arguments: produto);
+                    Modular.to.pushNamed('/produtos/adicionarProduto',
+                        arguments: produto);
                   },
                 );
               },

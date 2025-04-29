@@ -48,7 +48,8 @@ class ProdutoListItem extends StatelessWidget {
           icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () => cubit.removerProduto(produto.id),
         ),
-        onTap: () => Modular.to.pushNamed('/produtos/form', arguments: produto),
+        onTap: () => Modular.to
+            .pushNamed('/produtos/adicionarProduto', arguments: produto),
       ),
     );
   }

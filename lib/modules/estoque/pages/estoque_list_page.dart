@@ -22,7 +22,7 @@ class EstoqueListPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              Modular.to.pushNamed('/estoque/form');
+              Modular.to.pushNamed('/produtos/adicionarProduto');
             },
           ),
         ],

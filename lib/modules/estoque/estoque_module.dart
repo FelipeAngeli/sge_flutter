@@ -2,7 +2,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sge_flutter/modules/estoque/cubit/estoque_cubit.dart';
 import 'package:sge_flutter/modules/estoque/pages/estoque_list_page.dart';
-import 'package:sge_flutter/modules/estoque/pages/estoque_form_page.dart';
 import 'package:sge_flutter/core/services/produto_service.dart';
 import 'package:sge_flutter/core/services/caixa_service.dart';
 
@@ -24,13 +23,6 @@ class EstoqueModule extends Module {
       child: (context) => BlocProvider(
         create: (context) => Modular.get<EstoqueCubit>(),
         child: const EstoqueListPage(),
-      ),
-    );
-    r.child(
-      '/form',
-      child: (context) => BlocProvider.value(
-        value: Modular.get<EstoqueCubit>(),
-        child: const EstoqueFormPage(),
       ),
     );
   }
