@@ -1,18 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/produto_model.dart';
-import '../../../core/services/produto_service.dart';
-import 'produto_state.dart';
-import 'package:flutter_modular/flutter_modular.dart';
+import 'package:sge_flutter/core/services/produto_service.dart';
+import 'package:sge_flutter/models/produto_model.dart';
+import 'package:sge_flutter/modules/produto/cubit/produto_state.dart';
 
 class ProdutoCubit extends Cubit<ProdutoState> {
   final ProdutoService produtoService;
 
-  ProdutoCubit({required this.produtoService}) : super(ProdutoInitial());
+  ProdutoCubit({required this.produtoService}) : super(ProdutoInitial()) {
+    loadProdutos();
+  }
 
   Future<void> loadProdutos() async {
     emit(ProdutoLoading());
     final produtos = await produtoService.listarProdutos();
-    emit(ProdutoLoaded(produtos));
+    emit(ProdutoSuccess(produtos));
   }
 
   Future<void> adicionarProduto(ProdutoModel produto) async {

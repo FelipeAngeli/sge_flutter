@@ -1,17 +1,17 @@
 import '../../../models/produto_model.dart';
 
-abstract class ProdutoState {}
+sealed class ProdutoState {}
 
 class ProdutoInitial extends ProdutoState {}
 
 class ProdutoLoading extends ProdutoState {}
 
-class ProdutoLoaded extends ProdutoState {
+class ProdutoSuccess extends ProdutoState {
   final List<ProdutoModel> produtos;
-  ProdutoLoaded(this.produtos);
+  ProdutoSuccess(this.produtos);
 }
 
-class ProdutoError extends ProdutoState {
-  final String message;
-  ProdutoError(this.message);
+class ProdutoFailure extends ProdutoState {
+  final String error;
+  ProdutoFailure(this.error);
 }

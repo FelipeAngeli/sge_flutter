@@ -2,17 +2,21 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sge_flutter/modules/estoque/cubit/estoque_cubit.dart';
 import 'package:sge_flutter/modules/estoque/pages/estoque_list_page.dart';
-import 'package:sge_flutter/core/services/produto_service.dart';
 import 'package:sge_flutter/core/services/caixa_service.dart';
+import 'package:sge_flutter/modules/produto/produto_module.dart'; // Importa o módulo de produtos
 
 class EstoqueModule extends Module {
   @override
+  List<Module> get imports => [
+        ProdutoModule(), // Reaproveita ProdutoCubit e ProdutoService
+      ];
+
+  @override
   void binds(Injector i) {
-    i.addSingleton<ProdutoService>(ProdutoService.new);
     i.addSingleton<CaixaService>(CaixaService.new);
     i.addLazySingleton<EstoqueCubit>(() => EstoqueCubit(
-          produtoService: Modular.get<ProdutoService>(),
-          caixaService: Modular.get<CaixaService>(),
+          produtoService: i.get(), // usa ProdutoService já importado
+          caixaService: i.get(),
         ));
   }
 
@@ -21,7 +25,7 @@ class EstoqueModule extends Module {
     r.child(
       '/',
       child: (context) => BlocProvider(
-        create: (context) => Modular.get<EstoqueCubit>(),
+        create: (_) => Modular.get<EstoqueCubit>()..loadEstoque(),
         child: const EstoqueListPage(),
       ),
     );

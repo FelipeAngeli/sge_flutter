@@ -24,7 +24,7 @@ class ProdutoModule extends Module {
       ),
     );
     r.child(
-      '/adicionarProduto', // rota corrigida aqui
+      '/adicionarProduto',
       child: (_) => BlocProvider(
         create: (_) => Modular.get<ProdutoCubit>(),
         child: const ProdutoFormPage(),
