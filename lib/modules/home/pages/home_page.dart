@@ -85,6 +85,11 @@ class _HomeGrid extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: const [
         HomeCardButton(
+          title: 'Registrar Venda',
+          icon: Icons.point_of_sale,
+          route: '/venda',
+        ),
+        HomeCardButton(
           title: 'Produtos',
           icon: Icons.inventory_2,
           route: '/produtos/',

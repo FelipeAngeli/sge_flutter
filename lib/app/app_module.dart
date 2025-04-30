@@ -8,6 +8,7 @@ import 'package:sge_flutter/modules/caixa/caixa_module.dart';
 import 'package:sge_flutter/modules/home/cubit/home_cubit.dart';
 import 'package:sge_flutter/modules/produto/produto_module.dart';
 import 'package:sge_flutter/modules/relatorio/relatorio_module.dart';
+import 'package:sge_flutter/modules/venda/venda_module.dart';
 
 class AppModule extends Module {
   @override
@@ -23,8 +24,8 @@ class AppModule extends Module {
     r.module('/estoque', module: EstoqueModule());
     r.module('/caixa', module: CaixaModule());
     r.module('/relatorios', module: RelatorioModule());
+    r.module('/venda/', module: VendaModule());
   }
 
-  @override
   Widget get bootstrap => const AppWidget();
 }

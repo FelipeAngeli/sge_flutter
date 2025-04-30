@@ -20,7 +20,7 @@ class CategoriaDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: controller.text.isNotEmpty ? controller.text : null,
+      value: categorias.contains(controller.text) ? controller.text : null,
       items: categorias
           .map((categoria) => DropdownMenuItem(
                 value: categoria,
