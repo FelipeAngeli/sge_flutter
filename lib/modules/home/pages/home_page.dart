@@ -109,6 +109,11 @@ class _HomeGrid extends StatelessWidget {
           icon: Icons.assessment,
           route: '/relatorios/',
         ),
+        HomeCardButton(
+          title: 'Clientes',
+          icon: Icons.person,
+          route: '/clientes/',
+        ),
       ],
     );
   }

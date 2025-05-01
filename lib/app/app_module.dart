@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/app/app_widget.dart';
 import 'package:sge_flutter/core/services/caixa_service.dart';
+import 'package:sge_flutter/modules/clientes/clientes_module.dart';
 import 'package:sge_flutter/modules/home/home_module.dart';
 import 'package:sge_flutter/modules/estoque/estoque_module.dart';
 import 'package:sge_flutter/modules/caixa/caixa_module.dart';
@@ -25,6 +26,7 @@ class AppModule extends Module {
     r.module('/caixa', module: CaixaModule());
     r.module('/relatorios', module: RelatorioModule());
     r.module('/venda/', module: VendaModule());
+    r.module('/clientes', module: ClientesModule());
   }
 
   Widget get bootstrap => const AppWidget();
