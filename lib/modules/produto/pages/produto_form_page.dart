@@ -105,8 +105,13 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                 label: 'Quantidade',
                 controller: _quantidadeController,
                 keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Campo obrigatório' : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Campo obrigatório';
+                  }
+                  if (int.tryParse(value) == null) return 'Apenas números';
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               CustomTextField(
@@ -120,8 +125,13 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                 label: 'Vendas',
                 controller: _vendasController,
                 keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Campo obrigatório' : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Campo obrigatório';
+                  }
+                  if (int.tryParse(value) == null) return 'Apenas números';
+                  return null;
+                },
               ),
               const SizedBox(height: 32),
               PrimaryButton(

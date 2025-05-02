@@ -100,7 +100,7 @@ class _HomeGrid extends StatelessWidget {
           route: '/estoque/',
         ),
         HomeCardButton(
-          title: 'Caixa',
+          title: 'Financeiro',
           icon: Icons.point_of_sale,
           route: '/caixa/',
         ),

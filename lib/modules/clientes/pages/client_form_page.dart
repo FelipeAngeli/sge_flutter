@@ -5,10 +5,10 @@ import 'package:sge_flutter/models/cliente_model.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_cubit.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_state.dart';
 import 'package:sge_flutter/shared/widgets/primary_button.dart';
-import 'package:sge_flutter/shared/utils/regex.dart';
+import 'package:sge_flutter/shared/utils/input_formatters.dart';
+import 'package:sge_flutter/shared/widgets/custom_text_form_field.dart';
 
-import '../../../shared/utils/input_formatters.dart';
-import '../../../shared/widgets/custom_text_form_field.dart';
+import '../../../shared/utils/regex_helpers.dart';
 
 class ClienteFormPage extends StatefulWidget {
   const ClienteFormPage({super.key});
@@ -50,8 +50,9 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
 
   void _onBuscarCep() {
     final cubit = BlocProvider.of<ClienteCubit>(context);
-    if (_cepController.text.length == 8) {
-      cubit.buscarCep(_cepController.text);
+    final rawCep = _cepController.text.replaceAll(RegExp(r'\D'), '');
+    if (rawCep.length == 8) {
+      cubit.buscarCep(rawCep);
     }
   }
 
@@ -119,7 +120,7 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
                     keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value!.isEmpty) return 'Campo obrigatório';
-                      if (!RegexPatterns.telefone.hasMatch(value)) {
+                      if (!RegexHelpers.isValidTelefone(value)) {
                         return 'Telefone inválido';
                       }
                       return null;
@@ -132,7 +133,7 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value!.isEmpty) return 'Campo obrigatório';
-                      if (!RegexPatterns.cpfCnpj.hasMatch(value)) {
+                      if (!RegexHelpers.isValidCpfCnpj(value)) {
                         return 'CPF ou CNPJ inválido';
                       }
                       return null;
@@ -143,10 +144,10 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
                     label: 'CEP',
                     controller: _cepController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [CepInputFormatter()],
                     validator: (value) => value == null || value.isEmpty
                         ? 'Campo obrigatório'
                         : null,
-                    inputFormatters: [CepInputFormatter()],
                     onFieldSubmitted: (_) => _onBuscarCep(),
                   ),
                   ElevatedButton(
@@ -177,7 +178,7 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value!.isEmpty) return 'Campo obrigatório';
-                      if (!RegexPatterns.email.hasMatch(value)) {
+                      if (!RegexHelpers.isValidEmail(value)) {
                         return 'Email inválido';
                       }
                       return null;

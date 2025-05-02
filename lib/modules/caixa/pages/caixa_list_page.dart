@@ -11,7 +11,7 @@ class CaixaListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = BlocProvider.of<CaixaCubit>(context)..loadDashboard();
+    BlocProvider.of<CaixaCubit>(context).loadDashboard();
 
     return Scaffold(
       appBar: AppBar(
