@@ -11,23 +11,37 @@ class HiveConfig {
   static Future<void> start() async {
     await Hive.initFlutter();
 
-    if (!Hive.isAdapterRegistered(0))
-      Hive.registerAdapter(ProdutoModelAdapter());
-    if (!Hive.isAdapterRegistered(1))
-      Hive.registerAdapter(MovimentoCaixaModelAdapter());
-    if (!Hive.isAdapterRegistered(2))
-      Hive.registerAdapter(ClienteModelAdapter());
-    if (!Hive.isAdapterRegistered(3))
-      Hive.registerAdapter(CompraModelAdapter());
+    // ⚠️ Limpeza temporária: REMOVE ISSO DEPOIS DE TESTAR
+    await Hive.deleteBoxFromDisk('produtos');
+    await Hive.deleteBoxFromDisk('movimentos');
+    await Hive.deleteBoxFromDisk('clientes');
+    await Hive.deleteBoxFromDisk('compras');
 
+    _registerAdapters();
+    await _openBoxes();
+    await _populateMockData();
+  }
+
+  static void _registerAdapters() {
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(ProdutoModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter(MovimentoCaixaModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(ClienteModelAdapter());
+    }
+    if (!Hive.isAdapterRegistered(3)) {
+      Hive.registerAdapter(CompraModelAdapter());
+    }
+  }
+
+  static Future<void> _openBoxes() async {
     await Hive.openBox<ProdutoModel>('produtos');
     await Hive.openBox<MovimentoCaixaModel>('movimentos');
     await Hive.openBox<ClienteModel>('clientes');
     await Hive.openBox<CompraModel>('compras');
-
-    await _popularProdutosMock();
-    await _popularMovimentacoesMock();
-    await _popularClientesMock();
   }
 
   static Box<ProdutoModel> get produtoBox => Hive.box<ProdutoModel>('produtos');
@@ -36,34 +50,37 @@ class HiveConfig {
   static Box<ClienteModel> get clienteBox => Hive.box<ClienteModel>('clientes');
   static Box<CompraModel> get compraBox => Hive.box<CompraModel>('compras');
 
+  static Future<void> _populateMockData() async {
+    await _popularProdutosMock();
+    await _popularMovimentacoesMock();
+    await _popularClientesMock();
+  }
+
   static Future<void> _popularProdutosMock() async {
-    final box = produtoBox;
-    if (box.isEmpty) {
+    if (produtoBox.isEmpty) {
       final produtos = ProdutosMock.gerarProdutos();
-      for (var item in produtos) {
-        await box.put(item.id, item);
+      for (var produto in produtos) {
+        await produtoBox.put(produto.id, produto);
       }
       print('✅ Mock de produtos criado!');
     }
   }
 
   static Future<void> _popularMovimentacoesMock() async {
-    final box = movimentoBox;
-    if (box.isEmpty) {
+    if (movimentoBox.isEmpty) {
       final movimentos = MovimentosMock.gerarMovimentacoes();
-      for (var item in movimentos) {
-        await box.put(item.id, item);
+      for (var movimento in movimentos) {
+        await movimentoBox.put(movimento.id, movimento);
       }
       print('✅ Mock de movimentações criado!');
     }
   }
 
   static Future<void> _popularClientesMock() async {
-    final box = clienteBox;
-    if (box.isEmpty) {
+    if (clienteBox.isEmpty) {
       final clientes = ClientesMock.gerarClientes();
-      for (var item in clientes) {
-        await box.put(item.id, item);
+      for (var cliente in clientes) {
+        await clienteBox.put(cliente.id, cliente);
       }
       print('✅ Mock de clientes criado!');
     }

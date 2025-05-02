@@ -8,7 +8,7 @@ part of 'cliente_model.dart';
 
 class ClienteModelAdapter extends TypeAdapter<ClienteModel> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
   ClienteModel read(BinaryReader reader) {
@@ -24,14 +24,17 @@ class ClienteModelAdapter extends TypeAdapter<ClienteModel> {
       endereco: fields[4] as String,
       email: fields[5] as String,
       ativo: fields[6] as bool,
-      historicoCompras: (fields[7] as List?)?.cast<CompraModel>(),
+      cep: fields[7] as String,
+      cidade: fields[8] as String,
+      estado: fields[9] as String,
+      historicoCompras: (fields[10] as List?)?.cast<CompraModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ClienteModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,6 +50,12 @@ class ClienteModelAdapter extends TypeAdapter<ClienteModel> {
       ..writeByte(6)
       ..write(obj.ativo)
       ..writeByte(7)
+      ..write(obj.cep)
+      ..writeByte(8)
+      ..write(obj.cidade)
+      ..writeByte(9)
+      ..write(obj.estado)
+      ..writeByte(10)
       ..write(obj.historicoCompras);
   }
 

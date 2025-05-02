@@ -12,7 +12,7 @@ class ClientRelatorioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clienteService = Modular.get<ClienteService>();
-    final cliente = clienteService.buscarClientePorId(clienteId);
+    final cliente = clienteService.obterClientePorId(clienteId);
 
     if (cliente == null) {
       return Scaffold(
@@ -74,7 +74,9 @@ class ClientRelatorioPage extends StatelessWidget {
           child: Text(cliente.nome[0].toUpperCase()),
         ),
         title: Text(cliente.nome),
-        subtitle: Text(cliente.email),
+        subtitle:
+            Text('${cliente.email}\n${cliente.cidade}, ${cliente.estado}'),
+        isThreeLine: true,
         trailing: Chip(
           label: Text(
             cliente.ativo ? 'Ativo' : 'Inativo',

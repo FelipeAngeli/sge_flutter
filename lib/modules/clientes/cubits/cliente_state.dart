@@ -21,6 +21,23 @@ class ClienteLoaded extends ClienteState {
   List<Object?> get props => [clientes];
 }
 
+class ClienteCepLoading extends ClienteState {}
+
+class ClienteCepLoaded extends ClienteState {
+  final String endereco;
+  final String cidade;
+  final String estado;
+
+  const ClienteCepLoaded({
+    required this.endereco,
+    required this.cidade,
+    required this.estado,
+  });
+
+  @override
+  List<Object?> get props => [endereco, cidade, estado];
+}
+
 class ClienteFailure extends ClienteState {
   final String message;
 

@@ -3,7 +3,7 @@ import 'compra_model.dart';
 
 part 'cliente_model.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 3)
 class ClienteModel extends HiveObject {
   @HiveField(0)
   String id;
@@ -27,6 +27,15 @@ class ClienteModel extends HiveObject {
   bool ativo;
 
   @HiveField(7)
+  String cep;
+
+  @HiveField(8)
+  String cidade;
+
+  @HiveField(9)
+  String estado;
+
+  @HiveField(10)
   List<CompraModel> historicoCompras;
 
   ClienteModel({
@@ -36,7 +45,10 @@ class ClienteModel extends HiveObject {
     required this.cpfCnpj,
     required this.endereco,
     required this.email,
-    this.ativo = true,
+    required this.ativo,
+    required this.cep,
+    required this.cidade,
+    required this.estado,
     List<CompraModel>? historicoCompras,
   }) : historicoCompras = historicoCompras ?? [];
 }

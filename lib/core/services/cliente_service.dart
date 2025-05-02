@@ -13,14 +13,14 @@ class ClienteService {
   }
 
   Future<void> atualizarCliente(ClienteModel cliente) async {
-    await _clienteBox.put(cliente.id, cliente);
+    await cliente.save();
   }
 
   Future<void> excluirCliente(String id) async {
     await _clienteBox.delete(id);
   }
 
-  ClienteModel? buscarClientePorId(String id) {
+  ClienteModel? obterClientePorId(String id) {
     return _clienteBox.get(id);
   }
 }
