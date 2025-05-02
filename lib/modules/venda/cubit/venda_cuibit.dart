@@ -1,20 +1,26 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sge_flutter/core/services/cliente_service.dart';
 import 'package:sge_flutter/core/services/produto_service.dart';
+import 'package:sge_flutter/models/compra_model.dart';
 import 'package:sge_flutter/models/produto_model.dart';
+import 'package:sge_flutter/models/cliente_model.dart';
 import 'venda_state.dart';
 
 class VendaCubit extends Cubit<VendaState> {
   final ProdutoService _produtoService;
+  final ClienteService _clienteService;
 
-  VendaCubit(this._produtoService) : super(const VendaInitial());
+  VendaCubit(this._produtoService, this._clienteService)
+      : super(const VendaInitial());
 
-  Future<void> carregarProdutos() async {
+  Future<void> carregarProdutosEClientes() async {
     emit(const VendaLoading());
     try {
       final produtos = await _produtoService.listarProdutos();
-      emit(VendaLoaded(produtos: produtos));
+      final clientes = await _clienteService.listarClientes();
+      emit(VendaLoaded(produtos: produtos, clientes: clientes));
     } catch (e) {
-      emit(VendaFailure('Erro ao carregar produtos: $e'));
+      emit(VendaFailure('Erro ao carregar dados: $e'));
     }
   }
 
@@ -28,6 +34,13 @@ class VendaCubit extends Cubit<VendaState> {
     }
   }
 
+  void selecionarCliente(ClienteModel cliente) {
+    final currentState = state;
+    if (currentState is VendaLoaded) {
+      emit(currentState.copyWith(clienteSelecionado: cliente));
+    }
+  }
+
   void atualizarQuantidade(int novaQuantidade) {
     final currentState = state;
     if (currentState is VendaLoaded) {
@@ -38,11 +51,18 @@ class VendaCubit extends Cubit<VendaState> {
   Future<void> finalizarVenda() async {
     final currentState = state;
     if (currentState is VendaLoaded &&
-        currentState.produtoSelecionado != null) {
+        currentState.produtoSelecionado != null &&
+        currentState.clienteSelecionado != null) {
       emit(const VendaLoading());
 
       final produto = currentState.produtoSelecionado!;
+      final cliente = currentState.clienteSelecionado!;
       final quantidade = currentState.quantidade;
+
+      if (!cliente.ativo) {
+        emit(const VendaFailure('Cliente inativo não pode realizar compras.'));
+        return;
+      }
 
       if (quantidade <= 0) {
         emit(const VendaFailure('A quantidade deve ser maior que zero.'));
@@ -59,11 +79,32 @@ class VendaCubit extends Cubit<VendaState> {
         produto.vendas += quantidade;
         await _produtoService.atualizarProduto(produto);
 
+        // Garante que a lista está inicializada
+        cliente.historicoCompras ??= [];
+
+        // Adiciona nova compra
+        cliente.historicoCompras.add(CompraModel(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          clienteId: cliente.id,
+          produtoNome: produto.nome,
+          quantidade: quantidade,
+          precoUnitario: produto.preco,
+          data: DateTime.now(),
+        ));
+        await _clienteService.atualizarCliente(cliente);
+
         final produtosAtualizados = await _produtoService.listarProdutos();
-        emit(VendaLoaded(produtos: produtosAtualizados));
+        final clientesAtualizados = await _clienteService.listarClientes();
+        emit(VendaLoaded(
+          produtos: produtosAtualizados,
+          clientes: clientesAtualizados,
+        ));
       } catch (e) {
         emit(VendaFailure('Erro ao registrar venda: $e'));
       }
+    } else {
+      emit(const VendaFailure(
+          'Selecione o produto e o cliente antes de finalizar.'));
     }
   }
 }

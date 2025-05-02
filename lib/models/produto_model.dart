@@ -5,25 +5,25 @@ part 'produto_model.g.dart';
 @HiveType(typeId: 0)
 class ProdutoModel extends HiveObject {
   @HiveField(0)
-  late String id;
+  String id;
 
   @HiveField(1)
-  late String nome;
+  String nome;
 
   @HiveField(2)
-  late double preco;
+  double preco;
 
   @HiveField(3)
-  late int estoque;
+  int estoque;
 
   @HiveField(4)
-  late String descricao;
+  String descricao;
 
   @HiveField(5)
-  late String categoria;
+  String categoria;
 
   @HiveField(6)
-  late int vendas;
+  int vendas;
 
   ProdutoModel({
     required this.id,
@@ -32,18 +32,6 @@ class ProdutoModel extends HiveObject {
     required this.estoque,
     required this.descricao,
     required this.categoria,
-    required this.vendas,
+    this.vendas = 0,
   });
-
-  factory ProdutoModel.create({required String nome, required double preco}) {
-    return ProdutoModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      nome: nome,
-      preco: preco,
-      estoque: 0,
-      descricao: '',
-      categoria: '',
-      vendas: 0,
-    );
-  }
 }

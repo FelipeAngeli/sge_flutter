@@ -5,19 +5,19 @@ part 'movimento_caixa_model.g.dart';
 @HiveType(typeId: 1)
 class MovimentoCaixaModel extends HiveObject {
   @HiveField(0)
-  late String id;
+  String id;
 
   @HiveField(1)
-  late DateTime data;
+  DateTime data;
 
   @HiveField(2)
-  late double valor;
+  double valor;
 
   @HiveField(3)
-  late String tipo; // entrada ou saída
+  String tipo;
 
   @HiveField(4)
-  late String descricao;
+  String descricao;
 
   MovimentoCaixaModel({
     required this.id,

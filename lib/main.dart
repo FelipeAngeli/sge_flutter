@@ -7,5 +7,10 @@ import 'core/storage/hive_config.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveConfig.start();
-  runApp(ModularApp(module: AppModule(), child: const AppWidget()));
+  runApp(
+    ModularApp(
+      module: AppModule(),
+      child: const AppWidget(),
+    ),
+  );
 }

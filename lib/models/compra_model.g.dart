@@ -1,53 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'cliente_model.dart';
+part of 'compra_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ClienteModelAdapter extends TypeAdapter<ClienteModel> {
+class CompraModelAdapter extends TypeAdapter<CompraModel> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
-  ClienteModel read(BinaryReader reader) {
+  CompraModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ClienteModel(
+    return CompraModel(
       id: fields[0] as String,
-      nome: fields[1] as String,
-      telefone: fields[2] as String,
-      cpfCnpj: fields[3] as String,
-      endereco: fields[4] as String,
-      email: fields[5] as String,
-      ativo: fields[6] as bool,
-      historicoCompras: (fields[7] as List?)?.cast<CompraModel>(),
+      clienteId: fields[1] as String,
+      produtoNome: fields[2] as String,
+      quantidade: fields[3] as int,
+      precoUnitario: fields[4] as double,
+      data: fields[5] as DateTime,
     );
   }
 
   @override
-  void write(BinaryWriter writer, ClienteModel obj) {
+  void write(BinaryWriter writer, CompraModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.nome)
+      ..write(obj.clienteId)
       ..writeByte(2)
-      ..write(obj.telefone)
+      ..write(obj.produtoNome)
       ..writeByte(3)
-      ..write(obj.cpfCnpj)
+      ..write(obj.quantidade)
       ..writeByte(4)
-      ..write(obj.endereco)
+      ..write(obj.precoUnitario)
       ..writeByte(5)
-      ..write(obj.email)
-      ..writeByte(6)
-      ..write(obj.ativo)
-      ..writeByte(7)
-      ..write(obj.historicoCompras);
+      ..write(obj.data);
   }
 
   @override
@@ -56,7 +50,7 @@ class ClienteModelAdapter extends TypeAdapter<ClienteModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ClienteModelAdapter &&
+      other is CompraModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

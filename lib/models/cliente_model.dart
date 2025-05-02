@@ -1,29 +1,33 @@
 import 'package:hive/hive.dart';
+import 'compra_model.dart';
 
 part 'cliente_model.g.dart';
 
 @HiveType(typeId: 2)
 class ClienteModel extends HiveObject {
   @HiveField(0)
-  late String id;
+  String id;
 
   @HiveField(1)
-  late String nome;
+  String nome;
 
   @HiveField(2)
-  late String telefone;
+  String telefone;
 
   @HiveField(3)
-  late String cpfCnpj;
+  String cpfCnpj;
 
   @HiveField(4)
-  late String endereco;
+  String endereco;
 
   @HiveField(5)
-  late String email;
+  String email;
 
   @HiveField(6)
-  late bool ativo;
+  bool ativo;
+
+  @HiveField(7)
+  List<CompraModel> historicoCompras;
 
   ClienteModel({
     required this.id,
@@ -32,6 +36,7 @@ class ClienteModel extends HiveObject {
     required this.cpfCnpj,
     required this.endereco,
     required this.email,
-    required this.ativo,
-  });
+    this.ativo = true,
+    List<CompraModel>? historicoCompras,
+  }) : historicoCompras = historicoCompras ?? [];
 }

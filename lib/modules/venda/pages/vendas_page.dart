@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:sge_flutter/models/cliente_model.dart';
 import 'package:sge_flutter/models/produto_model.dart';
 import 'package:sge_flutter/modules/venda/cubit/venda_cuibit.dart';
 import 'package:sge_flutter/modules/venda/cubit/venda_state.dart';
@@ -12,7 +13,7 @@ class VendaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => Modular.get<VendaCubit>()..carregarProdutos(),
+      create: (_) => Modular.get<VendaCubit>()..carregarProdutosEClientes(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Registrar Venda'),
@@ -42,6 +43,10 @@ class VendaFormWidget extends StatelessWidget {
         }
 
         if (state is VendaLoaded) {
+          final clienteSelecionado = state.clienteSelecionado;
+          final clienteInativo =
+              clienteSelecionado != null && !clienteSelecionado.ativo;
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -79,13 +84,42 @@ class VendaFormWidget extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(height: 24),
+              DropdownButtonFormField<ClienteModel>(
+                value: state.clienteSelecionado,
+                items: state.clientes
+                    .where((cliente) => cliente.ativo) // filtra só ativos
+                    .map((cliente) {
+                  return DropdownMenuItem(
+                    value: cliente,
+                    child: Text(cliente.nome),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    BlocProvider.of<VendaCubit>(context)
+                        .selecionarCliente(value);
+                  }
+                },
+                decoration: const InputDecoration(labelText: 'Cliente'),
+              ),
+              if (clienteInativo) ...[
+                const SizedBox(height: 8),
+                const Text(
+                  '⚠️ Cliente inativo não pode realizar compras.',
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+              ],
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: PrimaryButton(
                   label: 'Finalizar Venda',
-                  enabled:
-                      state.produtoSelecionado != null && state.quantidade > 0,
+                  enabled: state.produtoSelecionado != null &&
+                      state.quantidade > 0 &&
+                      clienteSelecionado != null &&
+                      clienteSelecionado.ativo,
                   onPressed: () {
                     showDialog(
                       context: context,

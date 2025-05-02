@@ -3,11 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_cubit.dart';
 import 'package:sge_flutter/modules/clientes/pages/client_form_page.dart';
 import 'package:sge_flutter/modules/clientes/pages/client_list_page.dart';
+import 'package:sge_flutter/modules/clientes/pages/client_relatorio_page.dart';
+import 'package:sge_flutter/core/services/cliente_service.dart';
 
 class ClientesModule extends Module {
   @override
   void binds(Injector i) {
     i.addLazySingleton<ClienteCubit>(ClienteCubit.new);
+    i.addLazySingleton<ClienteService>(ClienteService.new);
   }
 
   @override
@@ -26,6 +29,13 @@ class ClientesModule extends Module {
     r.child(
       '/form/:id',
       child: (context) => const ClienteFormPage(),
+    );
+    r.child(
+      '/relatorio/:id',
+      child: (context) {
+        final id = Modular.args.params['id']!;
+        return ClientRelatorioPage(clienteId: id);
+      },
     );
   }
 }
