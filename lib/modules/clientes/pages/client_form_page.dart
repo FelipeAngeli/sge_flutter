@@ -4,6 +4,11 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/models/cliente_model.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_cubit.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_state.dart';
+import 'package:sge_flutter/shared/widgets/primary_button.dart';
+import 'package:sge_flutter/shared/utils/regex.dart';
+
+import '../../../shared/utils/input_formatters.dart';
+import '../../../shared/widgets/custom_text_form_field.dart';
 
 class ClienteFormPage extends StatefulWidget {
   const ClienteFormPage({super.key});
@@ -101,53 +106,94 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
               key: _formKey,
               child: ListView(
                 children: [
-                  TextFormField(
+                  CustomTextField(
                     controller: _nomeController,
-                    decoration: const InputDecoration(labelText: 'Nome'),
+                    label: 'Nome',
                     validator: (value) =>
                         value!.isEmpty ? 'Campo obrigatório' : null,
                   ),
-                  TextFormField(
+                  const SizedBox(height: 10),
+                  CustomTextField(
                     controller: _telefoneController,
-                    decoration: const InputDecoration(labelText: 'Telefone'),
+                    label: 'Telefone',
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Campo obrigatório';
+                      if (!RegexPatterns.telefone.hasMatch(value)) {
+                        return 'Telefone inválido';
+                      }
+                      return null;
+                    },
                   ),
-                  TextFormField(
+                  const SizedBox(height: 10),
+                  CustomTextField(
                     controller: _cpfCnpjController,
-                    decoration: const InputDecoration(labelText: 'CPF/CNPJ'),
-                  ),
-                  TextFormField(
-                    controller: _cepController,
-                    decoration: const InputDecoration(labelText: 'CEP'),
+                    label: 'CPF/CNPJ',
                     keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Campo obrigatório';
+                      if (!RegexPatterns.cpfCnpj.hasMatch(value)) {
+                        return 'CPF ou CNPJ inválido';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextField(
+                    label: 'CEP',
+                    controller: _cepController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Campo obrigatório'
+                        : null,
+                    inputFormatters: [CepInputFormatter()],
                     onFieldSubmitted: (_) => _onBuscarCep(),
+                  ),
+                  ElevatedButton(
+                    onPressed: _onBuscarCep,
+                    child: const Text('Buscar CEP'),
                   ),
                   if (loadingCep)
                     const Center(child: CircularProgressIndicator()),
-                  TextFormField(
+                  const SizedBox(height: 10),
+                  CustomTextField(
                     controller: _enderecoController,
-                    decoration: const InputDecoration(labelText: 'Endereço'),
+                    label: 'Endereço',
                   ),
-                  TextFormField(
+                  const SizedBox(height: 10),
+                  CustomTextField(
                     controller: _cidadeController,
-                    decoration: const InputDecoration(labelText: 'Cidade'),
+                    label: 'Cidade',
                   ),
-                  TextFormField(
+                  const SizedBox(height: 10),
+                  CustomTextField(
                     controller: _estadoController,
-                    decoration: const InputDecoration(labelText: 'Estado'),
+                    label: 'Estado',
                   ),
-                  TextFormField(
+                  const SizedBox(height: 10),
+                  CustomTextField(
                     controller: _emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    label: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Campo obrigatório';
+                      if (!RegexPatterns.email.hasMatch(value)) {
+                        return 'Email inválido';
+                      }
+                      return null;
+                    },
                   ),
+                  const SizedBox(height: 10),
                   SwitchListTile(
                     value: _ativo,
                     onChanged: (val) => setState(() => _ativo = val),
                     title: const Text('Ativo'),
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
+                  PrimaryButton(
+                    label: 'Salvar',
+                    enabled: true,
                     onPressed: _onSalvarCliente,
-                    child: const Text('Salvar'),
                   ),
                 ],
               ),

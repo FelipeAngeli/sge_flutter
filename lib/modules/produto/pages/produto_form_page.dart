@@ -150,7 +150,7 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                     Modular.to.pop();
                   }
                 },
-              )
+              ),
             ],
           ),
         ),
