@@ -1,26 +1,32 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sge_flutter/core/mock/cliente_mock.dart';
+import 'package:sge_flutter/core/mock/contas_mock.dart';
 import 'package:sge_flutter/models/cliente_model.dart';
 import 'package:sge_flutter/models/compra_model.dart';
 import 'package:sge_flutter/models/produto_model.dart';
-import 'package:sge_flutter/core/mock/cliente_mock.dart';
+import 'package:sge_flutter/models/movimento_financeiro_model.dart';
+import 'package:sge_flutter/models/lancamento_model.dart';
 import 'package:sge_flutter/core/mock/movimentos_mock.dart';
 import 'package:sge_flutter/core/mock/produtos_mock.dart';
-
-import '../../models/movimento_financeiro_model.dart';
 
 class HiveConfig {
   static Future<void> start() async {
     await Hive.initFlutter();
 
-    // ⚠️ Limpeza temporária: REMOVE ISSO DEPOIS DE TESTAR
-    await Hive.deleteBoxFromDisk('produtos');
-    await Hive.deleteBoxFromDisk('movimentos');
-    await Hive.deleteBoxFromDisk('clientes');
-    await Hive.deleteBoxFromDisk('compras');
+    // ⚠️ Só usar durante desenvolvimento (limpa tudo)
+    // await _clearBoxes();
 
     _registerAdapters();
     await _openBoxes();
     await _populateMockData();
+  }
+
+  static Future<void> _clearBoxes() async {
+    await Hive.deleteBoxFromDisk('produtos');
+    await Hive.deleteBoxFromDisk('movimentos');
+    await Hive.deleteBoxFromDisk('clientes');
+    await Hive.deleteBoxFromDisk('compras');
+    await Hive.deleteBoxFromDisk('lancamentos');
   }
 
   static void _registerAdapters() {
@@ -36,6 +42,9 @@ class HiveConfig {
     if (!Hive.isAdapterRegistered(3)) {
       Hive.registerAdapter(CompraModelAdapter());
     }
+    if (!Hive.isAdapterRegistered(4)) {
+      Hive.registerAdapter(LancamentoModelAdapter());
+    }
   }
 
   static Future<void> _openBoxes() async {
@@ -43,6 +52,7 @@ class HiveConfig {
     await Hive.openBox<MovimentoFinanceiroModel>('movimentos');
     await Hive.openBox<ClienteModel>('clientes');
     await Hive.openBox<CompraModel>('compras');
+    await Hive.openBox<LancamentoModel>('lancamentos');
   }
 
   static Box<ProdutoModel> get produtoBox => Hive.box<ProdutoModel>('produtos');
@@ -50,11 +60,14 @@ class HiveConfig {
       Hive.box<MovimentoFinanceiroModel>('movimentos');
   static Box<ClienteModel> get clienteBox => Hive.box<ClienteModel>('clientes');
   static Box<CompraModel> get compraBox => Hive.box<CompraModel>('compras');
+  static Box<LancamentoModel> get lancamentoBox =>
+      Hive.box<LancamentoModel>('lancamentos');
 
   static Future<void> _populateMockData() async {
     await _popularProdutosMock();
     await _popularMovimentacoesMock();
     await _popularClientesMock();
+    await _popularLancamentosMock();
   }
 
   static Future<void> _popularProdutosMock() async {
@@ -84,6 +97,16 @@ class HiveConfig {
         await clienteBox.put(cliente.id, cliente);
       }
       print('✅ Mock de clientes criado!');
+    }
+  }
+
+  static Future<void> _popularLancamentosMock() async {
+    if (lancamentoBox.isEmpty) {
+      final lancamentos = LancamentoMock.gerarLancamentos();
+      for (var lancamento in lancamentos) {
+        await lancamentoBox.put(lancamento.id, lancamento);
+      }
+      print('✅ Mock de lançamentos criado!');
     }
   }
 }

@@ -4,7 +4,7 @@ import 'package:sge_flutter/app/app_widget.dart';
 import 'package:sge_flutter/core/services/financeiro_service.dart';
 import 'package:sge_flutter/modules/clientes/clientes_module.dart';
 import 'package:sge_flutter/modules/estoque/estoque_module.dart';
-import 'package:sge_flutter/modules/financeiro/caixa_module.dart';
+import 'package:sge_flutter/modules/financeiro/financeiro_module.dart';
 import 'package:sge_flutter/modules/home/cubit/home_cubit.dart';
 import 'package:sge_flutter/modules/home/home_module.dart';
 import 'package:sge_flutter/modules/produto/produto_module.dart';

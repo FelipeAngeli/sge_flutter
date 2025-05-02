@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sge_flutter/core/services/financeiro_service.dart';
 import 'package:sge_flutter/core/services/produto_service.dart';
 import 'package:sge_flutter/modules/financeiro/cubit/financeiro_state.dart';
+import 'package:sge_flutter/models/lancamento_model.dart';
 
 class FinanceiroCubit extends Cubit<FinanceiroState> {
   final FinanceiroService financeiroService;
@@ -34,6 +35,36 @@ class FinanceiroCubit extends Cubit<FinanceiroState> {
       ));
     } catch (e) {
       emit(FinanceiroError('Erro ao carregar dashboard: $e'));
+    }
+  }
+
+  Future<void> loadContas() async {
+    try {
+      emit(FinanceiroLoading());
+
+      final contas = financeiroService.listarLancamentos();
+
+      emit(FinanceiroContasLoaded(contas: contas));
+    } catch (e) {
+      emit(FinanceiroError('Erro ao carregar contas: $e'));
+    }
+  }
+
+  Future<void> adicionarLancamento(LancamentoModel lancamento) async {
+    try {
+      await financeiroService.adicionarLancamento(lancamento);
+      loadContas(); // Atualiza lista após adicionar
+    } catch (e) {
+      emit(FinanceiroError('Erro ao adicionar conta: $e'));
+    }
+  }
+
+  Future<void> marcarComoPago(String id) async {
+    try {
+      await financeiroService.marcarComoPago(id);
+      loadContas(); // Atualiza lista após marcar como pago
+    } catch (e) {
+      emit(FinanceiroError('Erro ao marcar conta como paga: $e'));
     }
   }
 }

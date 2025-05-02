@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-
 import 'package:sge_flutter/shared/widgets/grafico_entradas_saidas.dart';
-
 import '../../../models/movimento_financeiro_model.dart';
+import '../../../shared/widgets/primary_button.dart';
 import '../cubit/financeiro_cubit.dart';
 import '../cubit/financeiro_state.dart';
 
@@ -63,7 +62,21 @@ class FinanceiroListPage extends StatelessWidget {
                       saidas: state.totalSaidas,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
+
+                  // 🌟 Botões alinhados verticalmente com espaçamento
+                  PrimaryButton(
+                    label: 'Contas a Pagar / Receber',
+                    onPressed: () => Modular.to.pushNamed('/financeiro/contas'),
+                  ),
+                  const SizedBox(height: 12),
+                  PrimaryButton(
+                    label: 'Nova Conta',
+                    onPressed: () =>
+                        Modular.to.pushNamed('/financeiro/conta-form'),
+                  ),
+
+                  const SizedBox(height: 32),
                   const Text(
                     'Últimas Movimentações',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -76,23 +89,27 @@ class FinanceiroListPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final MovimentoFinanceiroModel mov =
                           state.movimentacoesRecentes[index];
-                      return ListTile(
-                        leading: Icon(
-                          mov.tipo == 'entrada'
-                              ? Icons.arrow_downward
-                              : Icons.arrow_upward,
-                          color:
-                              mov.tipo == 'entrada' ? Colors.green : Colors.red,
-                        ),
-                        title: Text(mov.descricao),
-                        subtitle: Text(_formatarData(mov.data)),
-                        trailing: Text(
-                          'R\$ ${mov.valor.toStringAsFixed(2)}',
-                          style: TextStyle(
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ListTile(
+                          leading: Icon(
+                            mov.tipo == 'entrada'
+                                ? Icons.arrow_downward
+                                : Icons.arrow_upward,
                             color: mov.tipo == 'entrada'
                                 ? Colors.green
                                 : Colors.red,
-                            fontWeight: FontWeight.bold,
+                          ),
+                          title: Text(mov.descricao),
+                          subtitle: Text(_formatarData(mov.data)),
+                          trailing: Text(
+                            'R\$ ${mov.valor.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: mov.tipo == 'entrada'
+                                  ? Colors.green
+                                  : Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       );

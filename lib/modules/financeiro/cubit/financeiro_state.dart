@@ -1,3 +1,4 @@
+import '../../../models/lancamento_model.dart';
 import '../../../models/movimento_financeiro_model.dart';
 
 abstract class FinanceiroState {}
@@ -18,6 +19,12 @@ class FinanceiroLoaded extends FinanceiroState {
     required this.totalSaidas,
     required this.movimentacoesRecentes,
   });
+}
+
+class FinanceiroContasLoaded extends FinanceiroState {
+  final List<LancamentoModel> contas;
+
+  FinanceiroContasLoaded({required this.contas});
 }
 
 class FinanceiroError extends FinanceiroState {
