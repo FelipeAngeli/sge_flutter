@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:sge_flutter/modules/caixa/cubit/caixa_cubit.dart';
-import 'package:sge_flutter/modules/caixa/cubit/caixa_state.dart';
-import 'package:sge_flutter/models/movimento_caixa_model.dart';
+
 import 'package:sge_flutter/shared/widgets/grafico_entradas_saidas.dart';
 
-class CaixaListPage extends StatelessWidget {
-  const CaixaListPage({super.key});
+import '../../../models/movimento_financeiro_model.dart';
+import '../cubit/financeiro_cubit.dart';
+import '../cubit/financeiro_state.dart';
+
+class FinanceiroListPage extends StatelessWidget {
+  const FinanceiroListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<CaixaCubit>(context).loadDashboard();
+    BlocProvider.of<FinanceiroCubit>(context).loadDashboard();
 
     return Scaffold(
       appBar: AppBar(
@@ -21,11 +23,11 @@ class CaixaListPage extends StatelessWidget {
           onPressed: () => Modular.to.navigate('/'),
         ),
       ),
-      body: BlocBuilder<CaixaCubit, CaixaState>(
+      body: BlocBuilder<FinanceiroCubit, FinanceiroState>(
         builder: (context, state) {
-          if (state is CaixaLoading) {
+          if (state is FinanceiroLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is CaixaLoaded) {
+          } else if (state is FinanceiroLoaded) {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -72,7 +74,7 @@ class CaixaListPage extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: state.movimentacoesRecentes.length,
                     itemBuilder: (context, index) {
-                      final MovimentoCaixaModel mov =
+                      final MovimentoFinanceiroModel mov =
                           state.movimentacoesRecentes[index];
                       return ListTile(
                         leading: Icon(
@@ -83,7 +85,7 @@ class CaixaListPage extends StatelessWidget {
                               mov.tipo == 'entrada' ? Colors.green : Colors.red,
                         ),
                         title: Text(mov.descricao),
-                        subtitle: Text('${_formatarData(mov.data)}'),
+                        subtitle: Text(_formatarData(mov.data)),
                         trailing: Text(
                           'R\$ ${mov.valor.toStringAsFixed(2)}',
                           style: TextStyle(
@@ -99,7 +101,7 @@ class CaixaListPage extends StatelessWidget {
                 ],
               ),
             );
-          } else if (state is CaixaError) {
+          } else if (state is FinanceiroError) {
             return Center(child: Text('Erro: ${state.message}'));
           } else {
             return const SizedBox.shrink();

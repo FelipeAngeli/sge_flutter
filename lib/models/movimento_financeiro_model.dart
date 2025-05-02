@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'movimento_caixa_model.g.dart';
+part 'movimento_financeiro_model.g.dart';
 
 @HiveType(typeId: 1)
-class MovimentoCaixaModel extends HiveObject {
+class MovimentoFinanceiroModel extends HiveObject {
   @HiveField(0)
   String id;
 
@@ -19,7 +19,7 @@ class MovimentoCaixaModel extends HiveObject {
   @HiveField(4)
   String descricao;
 
-  MovimentoCaixaModel({
+  MovimentoFinanceiroModel({
     required this.id,
     required this.data,
     required this.valor,

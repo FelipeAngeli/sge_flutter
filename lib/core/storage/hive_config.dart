@@ -1,11 +1,12 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sge_flutter/models/cliente_model.dart';
 import 'package:sge_flutter/models/compra_model.dart';
-import 'package:sge_flutter/models/movimento_caixa_model.dart';
 import 'package:sge_flutter/models/produto_model.dart';
 import 'package:sge_flutter/core/mock/cliente_mock.dart';
 import 'package:sge_flutter/core/mock/movimentos_mock.dart';
 import 'package:sge_flutter/core/mock/produtos_mock.dart';
+
+import '../../models/movimento_financeiro_model.dart';
 
 class HiveConfig {
   static Future<void> start() async {
@@ -27,7 +28,7 @@ class HiveConfig {
       Hive.registerAdapter(ProdutoModelAdapter());
     }
     if (!Hive.isAdapterRegistered(1)) {
-      Hive.registerAdapter(MovimentoCaixaModelAdapter());
+      Hive.registerAdapter(MovimentoFinanceiroModelAdapter());
     }
     if (!Hive.isAdapterRegistered(2)) {
       Hive.registerAdapter(ClienteModelAdapter());
@@ -39,14 +40,14 @@ class HiveConfig {
 
   static Future<void> _openBoxes() async {
     await Hive.openBox<ProdutoModel>('produtos');
-    await Hive.openBox<MovimentoCaixaModel>('movimentos');
+    await Hive.openBox<MovimentoFinanceiroModel>('movimentos');
     await Hive.openBox<ClienteModel>('clientes');
     await Hive.openBox<CompraModel>('compras');
   }
 
   static Box<ProdutoModel> get produtoBox => Hive.box<ProdutoModel>('produtos');
-  static Box<MovimentoCaixaModel> get movimentoBox =>
-      Hive.box<MovimentoCaixaModel>('movimentos');
+  static Box<MovimentoFinanceiroModel> get movimentoBox =>
+      Hive.box<MovimentoFinanceiroModel>('movimentos');
   static Box<ClienteModel> get clienteBox => Hive.box<ClienteModel>('clientes');
   static Box<CompraModel> get compraBox => Hive.box<CompraModel>('compras');
 

@@ -1,19 +1,19 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:sge_flutter/models/movimento_caixa_model.dart';
+import 'package:sge_flutter/models/movimento_financeiro_model.dart';
 import 'package:sge_flutter/core/storage/hive_config.dart';
 import 'package:uuid/uuid.dart';
 
-class CaixaService {
-  final Box<MovimentoCaixaModel> _movimentoBox = HiveConfig.movimentoBox;
+class FinanceiroService {
+  final Box<MovimentoFinanceiroModel> _movimentoBox = HiveConfig.movimentoBox;
   final _uuid = const Uuid();
 
-  CaixaService();
+  FinanceiroService();
 
-  List<MovimentoCaixaModel> listarMovimentacoes() {
+  List<MovimentoFinanceiroModel> listarMovimentacoes() {
     return _movimentoBox.values.toList();
   }
 
-  Future<void> adicionarMovimentacao(MovimentoCaixaModel movimento) async {
+  Future<void> adicionarMovimentacao(MovimentoFinanceiroModel movimento) async {
     await _movimentoBox.put(movimento.id, movimento);
   }
 
@@ -21,7 +21,7 @@ class CaixaService {
     required double valor,
     required String descricao,
   }) async {
-    final movimento = MovimentoCaixaModel(
+    final movimento = MovimentoFinanceiroModel(
       id: _uuid.v4(),
       descricao: descricao,
       valor: valor,
@@ -36,7 +36,7 @@ class CaixaService {
     required double valor,
     required String descricao,
   }) async {
-    final movimento = MovimentoCaixaModel(
+    final movimento = MovimentoFinanceiroModel(
       id: _uuid.v4(),
       descricao: descricao,
       valor: valor,
@@ -63,7 +63,7 @@ class CaixaService {
         .fold(0.0, (sum, mov) => sum + mov.valor);
   }
 
-  List<MovimentoCaixaModel> listarMovimentacoesUltimosDias(int dias) {
+  List<MovimentoFinanceiroModel> listarMovimentacoesUltimosDias(int dias) {
     final agora = DateTime.now();
     return _movimentoBox.values
         .where((mov) => agora.difference(mov.data).inDays <= dias)

@@ -1,22 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'movimento_caixa_model.dart';
+part of 'movimento_financeiro_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MovimentoCaixaModelAdapter extends TypeAdapter<MovimentoCaixaModel> {
+class MovimentoFinanceiroModelAdapter
+    extends TypeAdapter<MovimentoFinanceiroModel> {
   @override
   final int typeId = 1;
 
   @override
-  MovimentoCaixaModel read(BinaryReader reader) {
+  MovimentoFinanceiroModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return MovimentoCaixaModel(
+    return MovimentoFinanceiroModel(
       id: fields[0] as String,
       data: fields[1] as DateTime,
       valor: fields[2] as double,
@@ -26,7 +27,7 @@ class MovimentoCaixaModelAdapter extends TypeAdapter<MovimentoCaixaModel> {
   }
 
   @override
-  void write(BinaryWriter writer, MovimentoCaixaModel obj) {
+  void write(BinaryWriter writer, MovimentoFinanceiroModel obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
@@ -47,7 +48,7 @@ class MovimentoCaixaModelAdapter extends TypeAdapter<MovimentoCaixaModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MovimentoCaixaModelAdapter &&
+      other is MovimentoFinanceiroModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

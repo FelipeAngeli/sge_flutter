@@ -1,22 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sge_flutter/modules/estoque/cubit/estoque_state.dart';
 import 'package:sge_flutter/core/services/produto_service.dart';
-import 'package:sge_flutter/core/services/caixa_service.dart';
+import 'package:sge_flutter/core/services/financeiro_service.dart';
 
 class EstoqueCubit extends Cubit<EstoqueState> {
   final ProdutoService produtoService;
-  final CaixaService caixaService;
+  final FinanceiroService financeiroService;
 
   EstoqueCubit({
     required this.produtoService,
-    required this.caixaService,
+    required this.financeiroService,
   }) : super(EstoqueInitial());
 
   Future<void> loadEstoque() async {
     try {
       emit(EstoqueLoading());
-      final produtos =
-          await produtoService.listarProdutos(); // ✅ corrigido com await
+      final produtos = await produtoService.listarProdutos();
       emit(EstoqueLoaded(produtos));
     } catch (e) {
       emit(EstoqueError('Erro ao carregar estoque: $e'));
@@ -39,7 +38,7 @@ class EstoqueCubit extends Cubit<EstoqueState> {
       if (produto != null && produto.estoque > 0) {
         await produtoService.removerEstoque(produtoId, 1);
 
-        await caixaService.registrarEntradaVenda(
+        await financeiroService.registrarEntradaVenda(
           valor: produto.preco,
           descricao: 'Venda de ${produto.nome}',
         );

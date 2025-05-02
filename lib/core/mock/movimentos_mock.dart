@@ -1,18 +1,18 @@
-import 'package:sge_flutter/models/movimento_caixa_model.dart';
+import 'package:sge_flutter/models/movimento_financeiro_model.dart';
 
 class MovimentosMock {
-  static List<MovimentoCaixaModel> gerarMovimentacoes() {
+  static List<MovimentoFinanceiroModel> gerarMovimentacoes() {
     final timestamp = DateTime.now();
 
     return [
-      MovimentoCaixaModel(
+      MovimentoFinanceiroModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         descricao: 'Venda Produto A',
         valor: 150.00,
         tipo: 'entrada',
         data: timestamp,
       ),
-      MovimentoCaixaModel(
+      MovimentoFinanceiroModel(
         id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
         descricao: 'Compra de Insumos',
         valor: 80.00,
