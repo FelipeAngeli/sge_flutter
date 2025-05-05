@@ -10,13 +10,14 @@ import 'package:sge_flutter/models/fornecedor_model.dart';
 import 'package:sge_flutter/models/lancamento_model.dart';
 import 'package:sge_flutter/models/movimento_financeiro_model.dart';
 import 'package:sge_flutter/models/produto_model.dart';
+import 'package:sge_flutter/models/recibo_model.dart';
 
 class HiveConfig {
   static Future<void> start() async {
     print('🔧 Inicializando Hive...');
     await Hive.initFlutter();
 
-    // ⚠️ Só ativa isso 1x para limpar os dados antigos se der erro!
+    // ⚠️ Só usar se precisar limpar dados antigos:
     // await _clearBoxes();
 
     _registerAdapters();
@@ -26,56 +27,49 @@ class HiveConfig {
   }
 
   static Future<void> _clearBoxes() async {
-    await Hive.deleteBoxFromDisk('produtos');
-    await Hive.deleteBoxFromDisk('movimentos');
-    await Hive.deleteBoxFromDisk('clientes');
-    await Hive.deleteBoxFromDisk('compras');
-    await Hive.deleteBoxFromDisk('lancamentos');
-    await Hive.deleteBoxFromDisk('fornecedores');
+    final boxes = [
+      'produtos',
+      'movimentos',
+      'clientes',
+      'compras',
+      'lancamentos',
+      'fornecedores',
+      'recibos',
+    ];
+    for (final box in boxes) {
+      await Hive.deleteBoxFromDisk(box);
+      print('🗑 Box $box limpo');
+    }
   }
 
   static void _registerAdapters() {
     print('📦 Registrando adapters...');
-    if (!Hive.isAdapterRegistered(0)) {
+    if (!Hive.isAdapterRegistered(0))
       Hive.registerAdapter(ProdutoModelAdapter());
-      print('➡ ProdutoModelAdapter registrado');
-    }
-    if (!Hive.isAdapterRegistered(1)) {
+    if (!Hive.isAdapterRegistered(1))
       Hive.registerAdapter(MovimentoFinanceiroModelAdapter());
-      print('➡ MovimentoFinanceiroModelAdapter registrado');
-    }
-    if (!Hive.isAdapterRegistered(2)) {
+    if (!Hive.isAdapterRegistered(2))
       Hive.registerAdapter(ClienteModelAdapter());
-      print('➡ ClienteModelAdapter registrado');
-    }
-    if (!Hive.isAdapterRegistered(3)) {
+    if (!Hive.isAdapterRegistered(3))
       Hive.registerAdapter(CompraModelAdapter());
-      print('➡ CompraModelAdapter registrado');
-    }
-    if (!Hive.isAdapterRegistered(4)) {
+    if (!Hive.isAdapterRegistered(4))
       Hive.registerAdapter(LancamentoModelAdapter());
-      print('➡ LancamentoModelAdapter registrado');
-    }
-    if (!Hive.isAdapterRegistered(6)) {
+    if (!Hive.isAdapterRegistered(6))
       Hive.registerAdapter(FornecedorModelAdapter());
-      print('➡ FornecedorModelAdapter registrado');
-    }
+    if (!Hive.isAdapterRegistered(7))
+      Hive.registerAdapter(ReciboModelAdapter());
   }
 
   static Future<void> _openBoxes() async {
     print('📦 Abrindo boxes...');
     await Hive.openBox<ProdutoModel>('produtos');
-    print('✔ Box produtos aberto');
     await Hive.openBox<MovimentoFinanceiroModel>('movimentos');
-    print('✔ Box movimentos aberto');
     await Hive.openBox<ClienteModel>('clientes');
-    print('✔ Box clientes aberto');
     await Hive.openBox<CompraModel>('compras');
-    print('✔ Box compras aberto');
     await Hive.openBox<LancamentoModel>('lancamentos');
-    print('✔ Box lancamentos aberto');
     await Hive.openBox<FornecedorModel>('fornecedores');
-    print('✔ Box fornecedores aberto');
+    await Hive.openBox<ReciboModel>('recibos');
+    print('✔ Todos os boxes foram abertos');
 
     await _migrarFornecedoresAntigos();
   }
@@ -89,6 +83,7 @@ class HiveConfig {
       Hive.box<LancamentoModel>('lancamentos');
   static Box<FornecedorModel> get fornecedorBox =>
       Hive.box<FornecedorModel>('fornecedores');
+  static Box<ReciboModel> get reciboBox => Hive.box<ReciboModel>('recibos');
 
   static Future<void> _populateMockData() async {
     print('📦 Populando dados mock...');
@@ -108,7 +103,7 @@ class HiveConfig {
       }
       print('✅ Mock de produtos criado!');
     } else {
-      print('ℹ️ Produtos já populados');
+      print('ℹ️ Produtos já estão populados');
     }
   }
 
@@ -120,7 +115,7 @@ class HiveConfig {
       }
       print('✅ Mock de movimentações criado!');
     } else {
-      print('ℹ️ Movimentações já populadas');
+      print('ℹ️ Movimentações já estão populadas');
     }
   }
 
@@ -132,7 +127,7 @@ class HiveConfig {
       }
       print('✅ Mock de clientes criado!');
     } else {
-      print('ℹ️ Clientes já populados');
+      print('ℹ️ Clientes já estão populados');
     }
   }
 
@@ -144,7 +139,7 @@ class HiveConfig {
       }
       print('✅ Mock de lançamentos criado!');
     } else {
-      print('ℹ️ Lançamentos já populados');
+      print('ℹ️ Lançamentos já estão populados');
     }
   }
 
@@ -161,16 +156,15 @@ class HiveConfig {
       for (var fornecedor in fornecedores) {
         await fornecedorBox.put(fornecedor.id, fornecedor);
       }
-      print('✅ Mock de fornecedores criado e associado a produtos!');
+      print('✅ Mock de fornecedores criado!');
     } else {
-      print('ℹ️ Fornecedores já populados');
+      print('ℹ️ Fornecedores já estão populados');
     }
   }
 
   static Future<void> _migrarFornecedoresAntigos() async {
     print('🔄 Migrando fornecedores antigos...');
-    final box = fornecedorBox;
-    for (var fornecedor in box.values) {
+    for (var fornecedor in fornecedorBox.values) {
       if (fornecedor.cnpj == null) {
         fornecedor.cnpj = '';
         await fornecedor.save();

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/app/app_widget.dart';
 import 'package:sge_flutter/core/services/financeiro_service.dart';
+import 'package:sge_flutter/core/services/recibo_service.dart';
 import 'package:sge_flutter/modules/clientes/clientes_module.dart';
 import 'package:sge_flutter/modules/estoque/estoque_module.dart';
 import 'package:sge_flutter/modules/financeiro/financeiro_module.dart';
 import 'package:sge_flutter/modules/home/cubit/home_cubit.dart';
 import 'package:sge_flutter/modules/home/home_module.dart';
 import 'package:sge_flutter/modules/produto/produto_module.dart';
+import 'package:sge_flutter/modules/recibo/recibo_module.dart';
 import 'package:sge_flutter/modules/relatorio/relatorio_module.dart';
 import 'package:sge_flutter/modules/venda/venda_module.dart';
 
@@ -16,6 +18,7 @@ class AppModule extends Module {
   void binds(Injector i) {
     i.addSingleton<HomeCubit>(HomeCubit.new);
     i.addSingleton<FinanceiroService>(FinanceiroService.new);
+    i.addSingleton<ReciboService>(ReciboService.new);
   }
 
   @override
@@ -27,6 +30,7 @@ class AppModule extends Module {
     r.module('/relatorios', module: RelatorioModule());
     r.module('/venda', module: VendaModule());
     r.module('/clientes', module: ClientesModule());
+    r.module('/recibo', module: ReciboModule());
   }
 
   Widget get bootstrap => const AppWidget();
