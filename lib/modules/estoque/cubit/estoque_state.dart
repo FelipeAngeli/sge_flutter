@@ -19,3 +19,9 @@ class EstoqueError extends EstoqueState {
 
   EstoqueError(this.message);
 }
+
+class FornecedoresLoaded extends EstoqueState {
+  final Map<String, String> fornecedores;
+
+  FornecedoresLoaded(this.fornecedores);
+}

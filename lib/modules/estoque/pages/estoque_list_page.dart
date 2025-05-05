@@ -4,14 +4,26 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/produto/cubit/produto_cubit.dart';
 import 'package:sge_flutter/modules/produto/cubit/produto_state.dart';
 import 'package:sge_flutter/shared/widgets/produto_card.dart';
+import 'package:sge_flutter/shared/widgets/primary_button.dart';
 
-class EstoqueListPage extends StatelessWidget {
+class EstoqueListPage extends StatefulWidget {
   const EstoqueListPage({super.key});
 
   @override
+  State<EstoqueListPage> createState() => _EstoqueListPageState();
+}
+
+class _EstoqueListPageState extends State<EstoqueListPage> {
+  @override
+  void initState() {
+    super.initState();
+    Modular.get<ProdutoCubit>().loadProdutos();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider<ProdutoCubit>(
-      create: (_) => Modular.get<ProdutoCubit>()..loadProdutos(),
+    return BlocProvider.value(
+      value: Modular.get<ProdutoCubit>(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Lista de Produtos'),
@@ -38,23 +50,47 @@ class EstoqueListPage extends StatelessWidget {
                   return const Center(
                       child: Text('Nenhum produto cadastrado.'));
                 }
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: produtos.length,
-                  itemBuilder: (context, index) {
-                    final produto = produtos[index];
-                    return ProdutoCard(
-                      produto: produto,
-                      onEdit: () {
-                        Modular.to.pushNamed('/produtos/adicionarProduto',
-                            arguments: produto);
-                      },
-                      onDelete: () {
-                        BlocProvider.of<ProdutoCubit>(context)
-                            .removerProduto(produto.id);
-                      },
-                    );
-                  },
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: PrimaryButton(
+                        label: 'Associar Fornecedor (Geral)',
+                        onPressed: () {
+                          Modular.to.pushNamed('/estoque/associarFornecedor');
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: produtos.length,
+                        itemBuilder: (context, index) {
+                          final produto = produtos[index];
+                          return ProdutoCard(
+                            produto: produto,
+                            onEdit: () {
+                              Modular.to.pushNamed('/produtos/adicionarProduto',
+                                  arguments: produto);
+                            },
+                            onDelete: () {
+                              BlocProvider.of<ProdutoCubit>(context)
+                                  .removerProduto(produto.id);
+                            },
+                            trailing: IconButton(
+                              icon: const Icon(Icons.store,
+                                  color: Colors.blueAccent),
+                              tooltip: 'Fornecedores',
+                              onPressed: () {
+                                Modular.to.pushNamed('/estoque/fornecedores',
+                                    arguments: produto.id);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
 
               case ProdutoFailure(:final error):

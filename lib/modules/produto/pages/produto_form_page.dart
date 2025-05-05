@@ -6,6 +6,8 @@ import 'package:sge_flutter/shared/widgets/custom_text_form_field.dart';
 import 'package:sge_flutter/shared/widgets/primary_button.dart';
 import '../../../models/produto_model.dart';
 import '../cubit/produto_cubit.dart';
+import 'package:sge_flutter/core/storage/hive_config.dart';
+import 'package:sge_flutter/models/fornecedor_model.dart';
 
 class ProdutoFormPage extends StatefulWidget {
   const ProdutoFormPage({super.key});
@@ -24,6 +26,8 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
   final _descricaoController = TextEditingController();
   final _categoriaController = TextEditingController();
   final _vendasController = TextEditingController();
+
+  String? _fornecedorSelecionado;
 
   ProdutoModel? produto;
   bool _formValid = false;
@@ -64,6 +68,7 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
   @override
   Widget build(BuildContext context) {
     final cubit = Modular.get<ProdutoCubit>();
+    final fornecedores = HiveConfig.fornecedorBox.values.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -106,9 +111,8 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                 controller: _quantidadeController,
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.isEmpty)
                     return 'Campo obrigatório';
-                  }
                   if (int.tryParse(value) == null) return 'Apenas números';
                   return null;
                 },
@@ -120,6 +124,30 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
               ),
               const SizedBox(height: 16),
               CategoriaDropdown(controller: _categoriaController),
+              const SizedBox(height: 16),
+
+              // 🔽 AJUSTADO: DROPDOWN DE FORNECEDOR COM NOME DA EMPRESA E CONTATO
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Fornecedor (Empresa / Contato)',
+                  border: OutlineInputBorder(),
+                ),
+                value: _fornecedorSelecionado,
+                items: fornecedores
+                    .map((f) => DropdownMenuItem(
+                          value: f.id,
+                          child: Text('${f.nomeEmpresa} / ${f.nomeFornecedor}'),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _fornecedorSelecionado = value;
+                  });
+                },
+                validator: (value) =>
+                    value == null ? 'Selecione um fornecedor' : null,
+              ),
+
               const SizedBox(height: 16),
               CustomTextField(
                 label: 'Vendas',
