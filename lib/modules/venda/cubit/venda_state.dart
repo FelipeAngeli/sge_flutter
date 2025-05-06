@@ -73,3 +73,12 @@ class VendaFailure extends VendaState {
   @override
   List<Object?> get props => [message];
 }
+
+class VendaSuccess extends VendaState {
+  final String message;
+
+  const VendaSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

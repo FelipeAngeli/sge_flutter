@@ -11,14 +11,12 @@ import 'package:sge_flutter/models/lancamento_model.dart';
 import 'package:sge_flutter/models/movimento_financeiro_model.dart';
 import 'package:sge_flutter/models/produto_model.dart';
 import 'package:sge_flutter/models/recibo_model.dart';
+import 'package:sge_flutter/models/venda_model.dart';
 
 class HiveConfig {
   static Future<void> start() async {
     print('🔧 Inicializando Hive...');
     await Hive.initFlutter();
-
-    // ⚠️ Só usar se precisar limpar dados antigos:
-    // await _clearBoxes();
 
     _registerAdapters();
     await _openBoxes();
@@ -35,6 +33,7 @@ class HiveConfig {
       'lancamentos',
       'fornecedores',
       'recibos',
+      'vendas',
     ];
     for (final box in boxes) {
       await Hive.deleteBoxFromDisk(box);
@@ -50,7 +49,7 @@ class HiveConfig {
       Hive.registerAdapter(MovimentoFinanceiroModelAdapter());
     if (!Hive.isAdapterRegistered(2))
       Hive.registerAdapter(ClienteModelAdapter());
-    if (!Hive.isAdapterRegistered(3))
+    if (!Hive.isAdapterRegistered(9))
       Hive.registerAdapter(CompraModelAdapter());
     if (!Hive.isAdapterRegistered(4))
       Hive.registerAdapter(LancamentoModelAdapter());
@@ -58,6 +57,7 @@ class HiveConfig {
       Hive.registerAdapter(FornecedorModelAdapter());
     if (!Hive.isAdapterRegistered(7))
       Hive.registerAdapter(ReciboModelAdapter());
+    if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(VendaModelAdapter());
   }
 
   static Future<void> _openBoxes() async {
@@ -69,6 +69,7 @@ class HiveConfig {
     await Hive.openBox<LancamentoModel>('lancamentos');
     await Hive.openBox<FornecedorModel>('fornecedores');
     await Hive.openBox<ReciboModel>('recibos');
+    await Hive.openBox<VendaModel>('vendas');
     print('✔ Todos os boxes foram abertos');
 
     await _migrarFornecedoresAntigos();
@@ -84,6 +85,7 @@ class HiveConfig {
   static Box<FornecedorModel> get fornecedorBox =>
       Hive.box<FornecedorModel>('fornecedores');
   static Box<ReciboModel> get reciboBox => Hive.box<ReciboModel>('recibos');
+  static Box<VendaModel> get vendaBox => Hive.box<VendaModel>('vendas');
 
   static Future<void> _populateMockData() async {
     print('📦 Populando dados mock...');
@@ -92,6 +94,7 @@ class HiveConfig {
     await _popularClientesMock();
     await _popularLancamentosMock();
     await _popularFornecedoresMock();
+    await _popularVendasMock();
     print('✅ Mock data populado');
   }
 
@@ -159,6 +162,34 @@ class HiveConfig {
       print('✅ Mock de fornecedores criado!');
     } else {
       print('ℹ️ Fornecedores já estão populados');
+    }
+  }
+
+  static Future<void> _popularVendasMock() async {
+    if (vendaBox.isEmpty) {
+      final clientes = clienteBox.values.toList();
+      final produtos = produtoBox.values.toList();
+      if (clientes.isEmpty || produtos.isEmpty) {
+        print('⚠️ Clientes ou produtos vazios para gerar vendas mock');
+        return;
+      }
+
+      for (int i = 0; i < 5; i++) {
+        final cliente = clientes[i % clientes.length];
+        final produto = produtos[i % produtos.length];
+        final venda = VendaModel(
+          id: 'venda_$i',
+          cliente: cliente.nome, // ✅ nome do cliente
+          produto: produto.nome, // ✅ nome do produto
+          quantidade: i + 1,
+          valorTotal: produto.preco * (i + 1),
+          data: DateTime.now().toIso8601String(),
+        );
+        await vendaBox.put(venda.id, venda);
+      }
+      print('✅ Mock de vendas criado!');
+    } else {
+      print('ℹ️ Vendas já estão populadas');
     }
   }
 

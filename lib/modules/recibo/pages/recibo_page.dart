@@ -25,6 +25,12 @@ class ReciboPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Modular.to.navigate('/'),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Modular.to.navigate('/'),
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: reciboService.gerarReciboPdfMock(),
