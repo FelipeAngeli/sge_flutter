@@ -12,6 +12,7 @@ import 'package:sge_flutter/modules/home/home_module.dart';
 import 'package:sge_flutter/modules/produto/produto_module.dart';
 import 'package:sge_flutter/modules/recibo/recibo_module.dart';
 import 'package:sge_flutter/modules/relatorio/relatorio_module.dart';
+import 'package:sge_flutter/modules/users/users_module.dart';
 import 'package:sge_flutter/modules/venda/venda_module.dart';
 
 class AppModule extends Module {
@@ -34,6 +35,7 @@ class AppModule extends Module {
     r.module('/venda', module: VendaModule());
     r.module('/clientes', module: ClientesModule());
     r.module('/recibo', module: ReciboModule());
+    r.module('/users', module: UsersModule());
   }
 
   Widget get bootstrap => const AppWidget();

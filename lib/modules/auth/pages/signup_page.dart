@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../../shared/widgets/primary_button.dart';
-import '../../../shared/widgets/password_text_field.dart';
-import '../../../shared/widgets/masked_text_field.dart';
-import '../../../shared/widgets/custom_text_field.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import '../../../shared/widgets/custom_text_field.dart';
+import '../../../shared/widgets/password_text_field.dart';
+import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/masked_text_field.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -40,24 +40,24 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cadastro'),
-        centerTitle: true,
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
+          print('📱 Estado recebido na SignUpPage: $state');
           if (state is AuthSuccess) {
-            Modular.to.navigate('/home');
-          }
-          if (state is AuthFailure) {
+            print('✅ Navegando para /login');
+            Modular.to.navigate('/login');
+          } else if (state is AuthFailure) {
+            print('❌ Erro: ${state.message}');
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
             );
           }
         },
         builder: (context, state) {
-          final isLoading = state is AuthLoading;
-          final validationErrors =
-              state is AuthValidationError ? state.errors : {};
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Form(
@@ -68,58 +68,93 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomTextField(
                     controller: _nameController,
                     label: 'Nome completo',
-                    errorText: validationErrors['name'],
-                    enabled: !isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nome é obrigatório';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(
                     controller: _emailController,
                     label: 'E-mail',
-                    errorText: validationErrors['email'],
-                    enabled: !isLoading,
                     keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'E-mail é obrigatório';
+                      }
+                      if (!value.contains('@')) {
+                        return 'E-mail inválido';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   PasswordTextField(
                     controller: _passwordController,
                     label: 'Senha',
-                    errorText: validationErrors['password'],
-                    enabled: !isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Senha é obrigatória';
+                      }
+                      if (value.length < 6) {
+                        return 'Senha deve ter pelo menos 6 caracteres';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   PasswordTextField(
                     controller: _confirmPasswordController,
                     label: 'Confirmar senha',
-                    errorText: validationErrors['confirmPassword'],
-                    enabled: !isLoading,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Confirmação de senha é obrigatória';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'As senhas não conferem';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   MaskedTextField(
                     controller: _cpfController,
                     label: 'CPF',
                     mask: '###.###.###-##',
-                    errorText: validationErrors['cpf'],
-                    enabled: !isLoading,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'CPF é obrigatório';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   MaskedTextField(
                     controller: _phoneController,
-                    label: 'Celular',
+                    label: 'Telefone',
                     mask: '(##) #####-####',
-                    errorText: validationErrors['phone'],
-                    enabled: !isLoading,
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Telefone é obrigatório';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 24),
                   PrimaryButton(
-                    label: isLoading ? 'Cadastrando...' : 'Cadastrar',
-                    enabled: !isLoading,
+                    label:
+                        state is AuthLoading ? 'Cadastrando...' : 'Cadastrar',
+                    enabled: !(state is AuthLoading),
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
                         BlocProvider.of<AuthCubit>(context).signUp(
-                          name: _nameController.text,
                           email: _emailController.text,
                           password: _passwordController.text,
-                          confirmPassword: _confirmPasswordController.text,
+                          name: _nameController.text,
                           cpf: _cpfController.text,
                           phone: _phoneController.text,
                         );
@@ -128,8 +163,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   const SizedBox(height: 16),
                   TextButton(
-                    onPressed:
-                        isLoading ? null : () => Modular.to.pushNamed('/login'),
+                    onPressed: state is AuthLoading
+                        ? null
+                        : () => Modular.to.pushNamed('/login'),
                     child: const Text('Já tem conta? Faça login'),
                   ),
                 ],

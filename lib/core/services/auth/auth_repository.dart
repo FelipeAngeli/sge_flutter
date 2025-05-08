@@ -3,17 +3,29 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthRepository {
   final supabase = Supabase.instance.client;
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String name,
+    required String cpf,
+    required String phone,
+  }) async {
     try {
       print('📧 Tentando cadastrar usuário:');
       print('   Email: $email');
       print('   Senha: ${'*' * password.length}');
+      print('   Nome: $name');
+      print('   CPF: $cpf');
+      print('   Telefone: $phone');
 
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
         emailRedirectTo: null,
         data: {
+          'name': name,
+          'cpf': cpf,
+          'phone': phone,
           'email_confirmed': true,
         },
       );
@@ -43,22 +55,10 @@ class AuthRepository {
 
   Future<void> signIn(String email, String password) async {
     try {
-      print('📧 Tentando login:');
+      print('📧 Tentando fazer login:');
       print('   Email: $email');
       print('   Senha: ${'*' * password.length}');
 
-      // Verifica se já existe uma sessão
-      final currentSession = supabase.auth.currentSession;
-      print(
-          '🔑 Sessão atual: ${currentSession != null ? 'Existe' : 'Não existe'}');
-
-      if (currentSession != null) {
-        print('⚠️ Já existe uma sessão ativa. Fazendo logout primeiro...');
-        await signOut();
-      }
-
-      // Tenta fazer login
-      print('🔄 Iniciando processo de login...');
       final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
@@ -73,37 +73,17 @@ class AuthRepository {
       print('✅ Login realizado com sucesso: ${response.user?.email}');
     } on AuthException catch (e) {
       print('❌ Erro de autenticação: ${e.message}');
-
       switch (e.message) {
         case 'Invalid login credentials':
           throw Exception('E-mail ou senha inválidos');
         case 'Email not confirmed':
-          print('⚠️ Ignorando erro de email não confirmado');
-          return;
-        case 'User not found':
-          throw Exception('Usuário não encontrado');
-        case 'Auth session missing!':
-          throw Exception('Erro de sessão. Por favor, tente novamente.');
+          throw Exception('E-mail não confirmado');
         default:
           throw Exception('Erro ao fazer login: ${e.message}');
       }
     } catch (e) {
       print('❌ Erro inesperado: $e');
       throw Exception('Erro ao fazer login: $e');
-    }
-  }
-
-  Future<void> resendConfirmationEmail(String email) async {
-    try {
-      print('📧 Reenviando email de confirmação para: $email');
-      await supabase.auth.resend(
-        type: OtpType.signup,
-        email: email,
-      );
-      print('✅ Email de confirmação reenviado com sucesso');
-    } catch (e) {
-      print('❌ Erro ao reenviar email de confirmação: $e');
-      throw Exception('Erro ao reenviar email de confirmação: $e');
     }
   }
 
@@ -118,11 +98,32 @@ class AuthRepository {
     }
   }
 
+  Future<void> resendConfirmationEmail(String email) async {
+    try {
+      print('📧 Tentando reenviar email de confirmação para: $email');
+      await supabase.auth.resend(
+        type: OtpType.signup,
+        email: email,
+      );
+      print('✅ Email de confirmação reenviado com sucesso');
+    } catch (e) {
+      print('❌ Erro ao reenviar email de confirmação: $e');
+      throw Exception('Erro ao reenviar email de confirmação: $e');
+    }
+  }
+
   Future<void> resetPassword(String email) async {
     try {
+      print('📧 Tentando enviar email de recuperação para: $email');
       await supabase.auth.resetPasswordForEmail(email);
+      print('✅ Email de recuperação enviado com sucesso');
     } catch (e) {
-      throw Exception('Erro ao enviar email de recuperação de senha: $e');
+      print('❌ Erro ao enviar email de recuperação: $e');
+      throw Exception('Erro ao enviar email de recuperação: $e');
     }
+  }
+
+  bool isAuthenticated() {
+    return supabase.auth.currentSession != null;
   }
 }

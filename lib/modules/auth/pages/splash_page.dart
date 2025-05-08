@@ -45,13 +45,13 @@ class _SplashPageState extends State<SplashPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.secondary,
+              Color(0xFF1A237E),
+              Color(0xFF3949AB),
             ],
           ),
         ),
@@ -65,7 +65,7 @@ class _SplashPageState extends State<SplashPage>
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -75,32 +75,34 @@ class _SplashPageState extends State<SplashPage>
                       ),
                     ],
                   ),
-                  child: Icon(
-                    Icons.school_rounded,
+                  child: const Icon(
+                    Icons.business_rounded,
                     size: 80,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Color(0xFF1A237E),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
               FadeTransition(
                 opacity: _animation,
-                child: Text(
+                child: const Text(
                   'SGE',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.surface,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),
               FadeTransition(
                 opacity: _animation,
-                child: Text(
-                  'Sistema de Gestão Escolar',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.surface,
-                      ),
+                child: const Text(
+                  'Sistema de Gestão Empresarial',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 48),

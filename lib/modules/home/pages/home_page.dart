@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               if (state is HomeLoading) {
                 return const CustomLoadingIndicator();
               } else if (state is HomeLoaded) {
-                return const _HomeGrid();
+                return const _HomeContent();
               } else if (state is HomeError) {
                 return Center(child: Text(state.message));
               } else {
@@ -80,23 +80,55 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('Sistema de Gestão Empresarial'),
-      centerTitle: true,
+      elevation: 0,
+      backgroundColor: const Color(0xFF1A237E),
+      iconTheme: const IconThemeData(color: Colors.white),
+      title: Row(
+        children: [
+          const Icon(Icons.business, size: 28, color: Colors.white),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'SGE',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  'Sistema de Gestão Empresarial',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       actions: [
         BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
             return IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.white),
+              tooltip: 'Sair',
               onPressed: state is AuthLoading
                   ? null
                   : () async {
-                      // Mostra diálogo de confirmação
                       final shouldLogout = await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Sair'),
                           content:
                               const Text('Deseja realmente sair do sistema?'),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
@@ -111,13 +143,13 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       );
 
                       if (shouldLogout == true) {
-                        // Faz logout
                         BlocProvider.of<AuthCubit>(context).signOut();
                       }
                     },
             );
           },
         ),
+        const SizedBox(width: 8),
       ],
     );
   }
@@ -126,51 +158,153 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _HomeGrid extends StatelessWidget {
-  const _HomeGrid();
+class _HomeContent extends StatelessWidget {
+  const _HomeContent();
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      padding: const EdgeInsets.all(16),
-      children: const [
-        HomeCardButton(
-          title: 'Registrar Venda',
-          icon: Icons.point_of_sale,
-          route: '/venda',
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildWelcomeSection(context),
+          _buildModuleSection(
+            context,
+            'Operações',
+            [
+              const HomeCardButton(
+                title: 'Registrar Venda',
+                icon: Icons.point_of_sale,
+                route: '/venda',
+                color: Color(0xFF3949AB),
+              ),
+              const HomeCardButton(
+                title: 'Produtos',
+                icon: Icons.inventory_2,
+                route: '/produtos',
+                color: Color(0xFF5C6BC0),
+              ),
+              const HomeCardButton(
+                title: 'Estoque',
+                icon: Icons.warehouse,
+                route: '/estoque',
+                color: Color(0xFF7986CB),
+              ),
+            ],
+          ),
+          _buildModuleSection(
+            context,
+            'Gestão',
+            [
+              const HomeCardButton(
+                title: 'Financeiro',
+                icon: Icons.point_of_sale,
+                route: '/financeiro',
+                color: Color(0xFF3F51B5),
+              ),
+              const HomeCardButton(
+                title: 'Relatórios',
+                icon: Icons.assessment,
+                route: '/relatorios',
+                color: Color(0xFF303F9F),
+              ),
+              const HomeCardButton(
+                title: 'Clientes',
+                icon: Icons.person,
+                route: '/clientes',
+                color: Color(0xFF283593),
+              ),
+            ],
+          ),
+          _buildModuleSection(
+            context,
+            'Documentos',
+            [
+              const HomeCardButton(
+                title: 'Recibos',
+                icon: Icons.receipt_long,
+                route: '/recibo',
+                color: Color(0xFF1A237E),
+              ),
+              const HomeCardButton(
+                title: 'Usuários',
+                icon: Icons.people,
+                route: '/users',
+                color: Color(0xFF0D47A1),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWelcomeSection(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A237E),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(32),
+          bottomRight: Radius.circular(32),
         ),
-        HomeCardButton(
-          title: 'Produtos',
-          icon: Icons.inventory_2,
-          route: '/produtos/',
-        ),
-        HomeCardButton(
-          title: 'Estoque',
-          icon: Icons.warehouse,
-          route: '/estoque/',
-        ),
-        HomeCardButton(
-          title: 'Financeiro',
-          icon: Icons.point_of_sale,
-          route: '/financeiro/',
-        ),
-        HomeCardButton(
-          title: 'Relatórios',
-          icon: Icons.assessment,
-          route: '/relatorios/',
-        ),
-        HomeCardButton(
-          title: 'Clientes',
-          icon: Icons.person,
-          route: '/clientes/',
-        ),
-        HomeCardButton(
-          title: 'Recibos',
-          icon: Icons.receipt_long,
-          route: '/recibo/',
-        ),
-      ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Bem-vindo ao SGE',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Gerencie sua empresa de forma eficiente',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white.withOpacity(0.9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModuleSection(
+    BuildContext context,
+    String title,
+    List<Widget> cards,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF333333),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 1.1,
+            children: cards,
+          ),
+        ],
+      ),
     );
   }
 }

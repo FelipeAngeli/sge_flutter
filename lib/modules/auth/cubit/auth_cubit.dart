@@ -4,10 +4,10 @@ import '../../../core/services/auth/auth_repository.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final AuthRepository authRepository;
+  final AuthRepository _authRepository;
   bool _isClosed = false;
 
-  AuthCubit(this.authRepository) : super(AuthInitial());
+  AuthCubit(this._authRepository) : super(AuthInitial());
 
   void _safeEmit(AuthState state) {
     if (!_isClosed) {
@@ -122,76 +122,143 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> signUp({
-    required String name,
     required String email,
     required String password,
-    required String confirmPassword,
+    required String name,
     required String cpf,
     required String phone,
   }) async {
-    // Valida o formulário
-    final errors = _validateSignUpForm(
-      name: name,
-      email: email,
-      password: password,
-      confirmPassword: confirmPassword,
-      cpf: cpf,
-      phone: phone,
-    );
-
-    if (errors.isNotEmpty) {
-      _safeEmit(AuthValidationError(errors));
-      return;
-    }
-
-    _safeEmit(AuthLoading());
     try {
-      await authRepository.signUp(email, password);
-      _safeEmit(AuthSuccess());
+      print('🚀 Iniciando processo de cadastro...');
+      emit(AuthLoading());
+
+      // Validações
+      if (email.isEmpty ||
+          password.isEmpty ||
+          name.isEmpty ||
+          cpf.isEmpty ||
+          phone.isEmpty) {
+        print('❌ Campos vazios detectados');
+        emit(AuthValidationError('Por favor, preencha todos os campos'));
+        return;
+      }
+
+      if (!_isValidEmail(email)) {
+        print('❌ Email inválido: $email');
+        emit(AuthValidationError('E-mail inválido'));
+        return;
+      }
+
+      if (password.length < 6) {
+        print('❌ Senha muito curta');
+        emit(AuthValidationError('A senha deve ter pelo menos 6 caracteres'));
+        return;
+      }
+
+      if (!_isValidCPF(cpf)) {
+        print('❌ CPF inválido: $cpf');
+        emit(AuthValidationError('CPF inválido'));
+        return;
+      }
+
+      print('✅ Validações passaram, tentando cadastrar no Supabase...');
+      await _authRepository.signUp(
+        email: email,
+        password: password,
+        name: name,
+        cpf: cpf,
+        phone: phone,
+      );
+
+      print('✅ Cadastro realizado com sucesso, emitindo AuthSuccess');
+      emit(AuthSuccess());
     } catch (e) {
-      _safeEmit(AuthFailure(e.toString()));
+      print('❌ Erro durante o cadastro: $e');
+      emit(AuthFailure(e.toString()));
     }
   }
 
   Future<void> signIn(String email, String password) async {
-    _safeEmit(AuthLoading());
     try {
-      await authRepository.signIn(email, password);
-      _safeEmit(AuthSuccess());
+      emit(AuthLoading());
+
+      // Validação básica
+      if (email.isEmpty || password.isEmpty) {
+        emit(AuthValidationError('Por favor, preencha todos os campos'));
+        return;
+      }
+
+      await _authRepository.signIn(email, password);
+      emit(AuthSuccess());
     } catch (e) {
-      _safeEmit(AuthFailure(e.toString()));
+      emit(AuthFailure(e.toString()));
     }
   }
 
   Future<void> resendConfirmationEmail(String email) async {
-    _safeEmit(AuthLoading());
     try {
-      await authRepository.resendConfirmationEmail(email);
-      _safeEmit(AuthSuccess());
+      emit(AuthLoading());
+      await _authRepository.resendConfirmationEmail(email);
+      emit(AuthSuccess());
     } catch (e) {
-      _safeEmit(AuthFailure(e.toString()));
+      emit(AuthFailure(e.toString()));
     }
   }
 
   Future<void> signOut() async {
-    _safeEmit(AuthLoading());
     try {
-      await authRepository.signOut();
-      _safeEmit(AuthInitial());
+      emit(AuthLoading());
+      await _authRepository.signOut();
+      emit(AuthInitial());
     } catch (e) {
-      _safeEmit(AuthFailure(e.toString()));
+      emit(AuthFailure(e.toString()));
     }
   }
 
   void reset() => _safeEmit(AuthInitial());
 
   Future<void> resetPassword(String email) async {
-    emit(AuthLoading());
     try {
-      await authRepository.resetPassword(email);
+      emit(AuthLoading());
+      await _authRepository.resetPassword(email);
       emit(AuthSuccess());
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  bool _isValidCPF(String cpf) {
+    // Remove caracteres não numéricos
+    cpf = cpf.replaceAll(RegExp(r'[^\d]'), '');
+
+    // Verifica se tem 11 dígitos
+    if (cpf.length != 11) return false;
+
+    // Verifica se todos os dígitos são iguais
+    if (RegExp(r'^(\d)\1{10}$').hasMatch(cpf)) return false;
+
+    // Validação do primeiro dígito verificador
+    int sum = 0;
+    for (int i = 0; i < 9; i++) {
+      sum += int.parse(cpf[i]) * (10 - i);
+    }
+    int digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
+    if (digit != int.parse(cpf[9])) return false;
+
+    // Validação do segundo dígito verificador
+    sum = 0;
+    for (int i = 0; i < 10; i++) {
+      sum += int.parse(cpf[i]) * (11 - i);
+    }
+    digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
+    if (digit != int.parse(cpf[10])) return false;
+
+    return true;
   }
 }

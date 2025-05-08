@@ -12,6 +12,6 @@ class AuthFailure extends AuthState {
 }
 
 class AuthValidationError extends AuthState {
-  final Map<String, String> errors;
-  AuthValidationError(this.errors);
+  final String message;
+  AuthValidationError(this.message);
 }
