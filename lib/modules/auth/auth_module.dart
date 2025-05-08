@@ -18,27 +18,20 @@ class AuthModule extends Module {
   @override
   void routes(RouteManager r) {
     r.child('/', child: (_) => const SplashPage());
-    r.child('/splash', child: (_) => const SplashPage());
-    r.child(
-      '/login',
-      child: (_) => BlocProvider(
-        create: (_) => Modular.get<AuthCubit>(),
-        child: const SignInPage(),
-      ),
-    );
-    r.child(
-      '/signup',
-      child: (_) => BlocProvider(
-        create: (_) => Modular.get<AuthCubit>(),
-        child: const SignUpPage(),
-      ),
-    );
-    r.child(
-      '/forgot-password',
-      child: (_) => BlocProvider(
-        create: (_) => Modular.get<AuthCubit>(),
-        child: const ForgotPasswordPage(),
-      ),
-    );
+    r.child('/login',
+        child: (_) => BlocProvider(
+              create: (_) => Modular.get<AuthCubit>(),
+              child: const SignInPage(),
+            ));
+    r.child('/signup',
+        child: (_) => BlocProvider(
+              create: (_) => Modular.get<AuthCubit>(),
+              child: const SignUpPage(),
+            ));
+    r.child('/forgot-password',
+        child: (_) => BlocProvider(
+              create: (_) => Modular.get<AuthCubit>(),
+              child: const ForgotPasswordPage(),
+            ));
   }
 }
