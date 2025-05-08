@@ -6,7 +6,7 @@ import '../../../shared/widgets/custom_text_field.dart';
 import '../../../shared/widgets/masked_text_field.dart';
 import '../cubit/users_cubit.dart';
 import '../cubit/users_state.dart';
-import '../models/user_model.dart';
+import '../../../models/user_model.dart';
 
 class UserFormPage extends StatefulWidget {
   const UserFormPage({super.key});

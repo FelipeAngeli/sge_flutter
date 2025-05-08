@@ -4,7 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../cubit/users_cubit.dart';
 import '../cubit/users_state.dart';
-import '../models/user_model.dart';
+import '../../../models/user_model.dart';
 
 class UsersListPage extends StatefulWidget {
   const UsersListPage({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/users_cubit.dart';
-import 'repositories/users_repository.dart';
+import '../../data/repositories/users_repository.dart';
 import 'pages/users_list_page.dart';
 import 'pages/user_form_page.dart';
 
