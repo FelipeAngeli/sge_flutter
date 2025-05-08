@@ -3,6 +3,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/app/app_widget.dart';
 import 'package:sge_flutter/core/services/financeiro_service.dart';
 import 'package:sge_flutter/core/services/recibo_service.dart';
+import 'package:sge_flutter/modules/auth/auth_module.dart';
 import 'package:sge_flutter/modules/clientes/clientes_module.dart';
 import 'package:sge_flutter/modules/estoque/estoque_module.dart';
 import 'package:sge_flutter/modules/financeiro/financeiro_module.dart';
@@ -23,7 +24,9 @@ class AppModule extends Module {
 
   @override
   void routes(RouteManager r) {
-    r.module('/', module: HomeModule());
+    // Começar com AuthModule
+    r.module('/', module: AuthModule());
+    r.module('/home', module: HomeModule());
     r.module('/produtos', module: ProdutoModule());
     r.module('/estoque', module: EstoqueModule());
     r.module('/financeiro', module: FinanceiroModule());

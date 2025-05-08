@@ -6,6 +6,8 @@ import 'package:sge_flutter/modules/home/cubit/home_cubit.dart';
 import 'package:sge_flutter/modules/home/cubit/home_state.dart';
 import 'package:sge_flutter/shared/widgets/custom_loading_indicator.dart';
 import 'package:sge_flutter/shared/widgets/home_card_button.dart';
+import 'package:sge_flutter/modules/auth/cubit/auth_cubit.dart';
+import 'package:sge_flutter/modules/auth/cubit/auth_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,13 +18,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late HomeCubit homeCubit;
+  late AuthCubit authCubit;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    homeCubit = Modular.get<HomeCubit>(); // <-- Correção importante aqui
-    homeCubit.loadHomeData(); // Carrega ao abrir a primeira vez
+    homeCubit = Modular.get<HomeCubit>();
+    authCubit = Modular.get<AuthCubit>();
+    homeCubit.loadHomeData();
   }
 
   @override
@@ -38,22 +42,32 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<HomeCubit>.value(
-      value: homeCubit,
-      child: Scaffold(
-        appBar: const _HomeAppBar(),
-        body: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            if (state is HomeLoading) {
-              return const CustomLoadingIndicator();
-            } else if (state is HomeLoaded) {
-              return const _HomeGrid();
-            } else if (state is HomeError) {
-              return Center(child: Text(state.message));
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeCubit>.value(value: homeCubit),
+        BlocProvider<AuthCubit>.value(value: authCubit),
+      ],
+      child: BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthInitial) {
+            Modular.to.navigate('/login');
+          }
+        },
+        child: Scaffold(
+          appBar: const _HomeAppBar(),
+          body: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              if (state is HomeLoading) {
+                return const CustomLoadingIndicator();
+              } else if (state is HomeLoaded) {
+                return const _HomeGrid();
+              } else if (state is HomeError) {
+                return Center(child: Text(state.message));
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
         ),
       ),
     );
@@ -68,6 +82,43 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: const Text('Sistema de Gestão Empresarial'),
       centerTitle: true,
+      actions: [
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            return IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: state is AuthLoading
+                  ? null
+                  : () async {
+                      // Mostra diálogo de confirmação
+                      final shouldLogout = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Sair'),
+                          content:
+                              const Text('Deseja realmente sair do sistema?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text('Sair'),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (shouldLogout == true) {
+                        // Faz logout
+                        BlocProvider.of<AuthCubit>(context).signOut();
+                      }
+                    },
+            );
+          },
+        ),
+      ],
     );
   }
 

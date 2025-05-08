@@ -5,20 +5,13 @@ import 'pages/recibo_list_page.dart';
 
 class ReciboModule extends Module {
   @override
-  void binds(i) {
-    // Se necessário no futuro:
+  void exportedBinds(Injector i) {
     i.addLazySingleton<ReciboService>(ReciboService.new);
   }
 
   @override
-  void routes(r) {
-    r.child(
-      '/',
-      child: (_) => const ReciboPage(),
-    );
-    r.child(
-      '/lista',
-      child: (_) => const ReciboListPage(),
-    );
+  void routes(RouteManager r) {
+    r.child('/', child: (_) => const ReciboPage());
+    r.child('/lista', child: (_) => const ReciboListPage());
   }
 }
