@@ -68,17 +68,8 @@ class _ContaFormPageState extends State<ContaFormPage> {
                     value == null || value.isEmpty ? 'Campo obrigatório' : null,
               ),
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                ),
-                icon: const Icon(Icons.calendar_today),
-                label: Text(_dataFormatada),
+              PrimaryButton(
+                label: _dataFormatada,
                 onPressed: () async {
                   final data = await showDatePicker(
                     context: context,

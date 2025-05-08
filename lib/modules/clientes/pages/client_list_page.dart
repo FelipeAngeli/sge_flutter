@@ -5,6 +5,8 @@ import 'package:sge_flutter/models/cliente_model.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_cubit.dart';
 import 'package:sge_flutter/modules/clientes/cubits/cliente_state.dart';
 
+import '../../../shared/widgets/primary_button.dart';
+
 class ClientListPage extends StatelessWidget {
   const ClientListPage({super.key});
 
@@ -116,12 +118,12 @@ class ClienteCard extends StatelessWidget {
                             onPressed: () => Navigator.pop(ctx),
                             child: const Text('Cancelar'),
                           ),
-                          ElevatedButton(
+                          PrimaryButton(
+                            label: 'Confirmar',
                             onPressed: () {
                               cubit.excluirCliente(cliente.id);
                               Navigator.pop(ctx);
                             },
-                            child: const Text('Confirmar'),
                           ),
                         ],
                       ),

@@ -6,9 +6,23 @@ import 'package:sge_flutter/models/produto_model.dart';
 import 'package:sge_flutter/modules/venda/cubit/venda_cuibit.dart';
 import 'package:sge_flutter/modules/venda/cubit/venda_state.dart';
 import 'package:sge_flutter/shared/widgets/primary_button.dart';
+import '../../../shared/widgets/custom_text_field.dart';
 
-class VendaPage extends StatelessWidget {
+class VendaPage extends StatefulWidget {
   const VendaPage({super.key});
+
+  @override
+  State<VendaPage> createState() => _VendaPageState();
+}
+
+class _VendaPageState extends State<VendaPage> {
+  final _quantidadeController = TextEditingController();
+
+  @override
+  void dispose() {
+    _quantidadeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,139 +44,240 @@ class VendaPage extends StatelessWidget {
             onPressed: () => Modular.to.navigate('/'),
           ),
         ),
-        body: const Padding(
-          padding: EdgeInsets.all(16),
-          child: VendaFormWidget(),
-        ),
-      ),
-    );
-  }
-}
+        body: BlocBuilder<VendaCubit, VendaState>(
+          builder: (context, state) {
+            if (state is VendaLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-class VendaFormWidget extends StatelessWidget {
-  const VendaFormWidget({super.key});
+            if (state is VendaLoaded) {
+              final clienteSelecionado = state.clienteSelecionado;
+              final clienteInativo =
+                  clienteSelecionado != null && !clienteSelecionado.ativo;
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<VendaCubit, VendaState>(
-      builder: (context, state) {
-        if (state is VendaLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is VendaLoaded) {
-          final clienteSelecionado = state.clienteSelecionado;
-          final clienteInativo =
-              clienteSelecionado != null && !clienteSelecionado.ativo;
-
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DropdownButtonFormField<ProdutoModel>(
-                  value: state.produtoSelecionado,
-                  items: state.produtos.map((produto) {
-                    return DropdownMenuItem(
-                      value: produto,
-                      child: Text(produto.nome),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      BlocProvider.of<VendaCubit>(context)
-                          .selecionarProduto(value);
-                    }
-                  },
-                  decoration: const InputDecoration(labelText: 'Produto'),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  initialValue:
-                      state.quantidade > 0 ? state.quantidade.toString() : '',
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Quantidade'),
-                  onChanged: (value) {
-                    final quantidade = int.tryParse(value) ?? 0;
-                    BlocProvider.of<VendaCubit>(context)
-                        .atualizarQuantidade(quantidade);
-                  },
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Subtotal: R\$ ${state.subtotal.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 24),
-                DropdownButtonFormField<ClienteModel>(
-                  value: state.clienteSelecionado,
-                  items: state.clientes.where((c) => c.ativo).map((cliente) {
-                    return DropdownMenuItem(
-                      value: cliente,
-                      child: Text(cliente.nome),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      BlocProvider.of<VendaCubit>(context)
-                          .selecionarCliente(value);
-                    }
-                  },
-                  decoration: const InputDecoration(labelText: 'Cliente'),
-                ),
-                if (clienteInativo) ...[
-                  const SizedBox(height: 8),
-                  const Text(
-                    '⚠️ Cliente inativo não pode realizar compras.',
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
-                  ),
-                ],
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  child: PrimaryButton(
-                    label: 'Finalizar Venda',
-                    enabled: state.produtoSelecionado != null &&
-                        state.quantidade > 0 &&
-                        clienteSelecionado != null &&
-                        clienteSelecionado.ativo,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          title: const Text('Confirmar Venda'),
-                          content: Text(
-                            'Deseja confirmar a venda de ${state.quantidade}x "${state.produtoSelecionado?.nome}" por R\$ ${state.subtotal.toStringAsFixed(2)}?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx),
-                              child: const Text('Cancelar'),
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Produto',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            FilledButton(
-                              onPressed: () {
-                                BlocProvider.of<VendaCubit>(context)
-                                    .finalizarVenda();
-                                Navigator.pop(ctx);
+                            const SizedBox(height: 8),
+                            DropdownButtonFormField<ProdutoModel>(
+                              value: state.produtoSelecionado,
+                              items: state.produtos.map((produto) {
+                                return DropdownMenuItem(
+                                  value: produto,
+                                  child: Text(produto.nome),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                if (value != null) {
+                                  BlocProvider.of<VendaCubit>(context)
+                                      .selecionarProduto(value);
+                                }
                               },
-                              child: const Text('Confirmar'),
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            CustomTextField(
+                              controller: _quantidadeController,
+                              label: 'Quantidade',
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Campo obrigatório';
+                                }
+                                final quantidade = int.tryParse(value);
+                                if (quantidade == null || quantidade <= 0) {
+                                  return 'Quantidade inválida';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                final quantidade = int.tryParse(value) ?? 0;
+                                BlocProvider.of<VendaCubit>(context)
+                                    .atualizarQuantidade(quantidade);
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceVariant,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Subtotal:',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'R\$ ${state.subtotal.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Cliente',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            DropdownButtonFormField<ClienteModel>(
+                              value: state.clienteSelecionado,
+                              items: state.clientes
+                                  .where((c) => c.ativo)
+                                  .map((cliente) {
+                                return DropdownMenuItem(
+                                  value: cliente,
+                                  child: Text(cliente.nome),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                if (value != null) {
+                                  BlocProvider.of<VendaCubit>(context)
+                                      .selecionarCliente(value);
+                                }
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                            ),
+                            if (clienteInativo) ...[
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .errorContainer,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.warning_amber_rounded,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Cliente inativo não pode realizar compras.',
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      child: PrimaryButton(
+                        label: 'Finalizar Venda',
+                        enabled: state.produtoSelecionado != null &&
+                            state.quantidade > 0 &&
+                            clienteSelecionado != null &&
+                            clienteSelecionado.ativo,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              title: const Text('Confirmar Venda'),
+                              content: Text(
+                                'Deseja confirmar a venda de ${state.quantidade}x "${state.produtoSelecionado?.nome}" por R\$ ${state.subtotal.toStringAsFixed(2)}?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text('Cancelar'),
+                                ),
+                                FilledButton(
+                                  onPressed: () {
+                                    BlocProvider.of<VendaCubit>(context)
+                                        .finalizarVenda();
+                                    Navigator.pop(ctx);
+                                  },
+                                  child: const Text('Confirmar'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }
+              );
+            }
 
-        return const Center(child: Text('Erro ao carregar produtos.'));
-      },
+            return const Center(child: Text('Erro ao carregar produtos.'));
+          },
+        ),
+      ),
     );
   }
 }

@@ -30,6 +30,7 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
 
   bool _ativo = true;
   ClienteModel? cliente;
+  bool isLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -190,10 +191,10 @@ class _ClienteFormPageState extends State<ClienteFormPage> {
                     onChanged: (val) => setState(() => _ativo = val),
                     title: const Text('Ativo'),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
                   PrimaryButton(
-                    label: 'Salvar',
-                    enabled: true,
+                    label: isLoading ? 'Salvando...' : 'Salvar',
+                    enabled: !isLoading,
                     onPressed: _onSalvarCliente,
                   ),
                 ],
