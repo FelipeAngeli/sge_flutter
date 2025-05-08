@@ -4,7 +4,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../../../shared/widgets/custom_text_field.dart';
-import '../../../shared/widgets/password_text_field.dart';
+import '../widgets/password_text_field.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/masked_text_field.dart';
 

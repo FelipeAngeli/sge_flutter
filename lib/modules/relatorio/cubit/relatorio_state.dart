@@ -1,4 +1,4 @@
-import 'package:sge_flutter/shared/widgets/produtos_vendidos_card.dart';
+import 'package:sge_flutter/modules/relatorio/widgets/produtos_vendidos_card.dart';
 
 sealed class RelatorioState {}
 

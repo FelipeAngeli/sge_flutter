@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/relatorio/cubit/relatorio_cubit.dart';
 import 'package:sge_flutter/modules/relatorio/cubit/relatorio_state.dart';
-import 'package:sge_flutter/shared/widgets/grafico_estoque_estoque_categoria.dart';
-import 'package:sge_flutter/shared/widgets/produtos_vendidos_card.dart';
-import 'package:sge_flutter/shared/widgets/relatorio_total_estoque_card.dart';
-import 'package:sge_flutter/shared/widgets/relatorio_vendas_chart.dart';
-import 'package:sge_flutter/shared/widgets/relatorio_vendas_list.dart';
+import 'package:sge_flutter/modules/relatorio/widgets/grafico_estoque_estoque_categoria.dart';
+import 'package:sge_flutter/modules/relatorio/widgets/produtos_vendidos_card.dart';
+import 'package:sge_flutter/modules/relatorio/widgets/relatorio_total_estoque_card.dart';
+import 'package:sge_flutter/modules/relatorio/widgets/relatorio_vendas_chart.dart';
+import 'package:sge_flutter/modules/relatorio/widgets/relatorio_vendas_list.dart';
 
 class RelatorioPage extends StatelessWidget {
   const RelatorioPage({super.key});

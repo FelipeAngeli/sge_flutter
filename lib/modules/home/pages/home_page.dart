@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/home/cubit/home_cubit.dart';
 import 'package:sge_flutter/modules/home/cubit/home_state.dart';
-import 'package:sge_flutter/shared/widgets/custom_loading_indicator.dart';
-import 'package:sge_flutter/shared/widgets/home_card_button.dart';
+import 'package:sge_flutter/modules/home/widgets/custom_loading_indicator.dart';
+import 'package:sge_flutter/modules/home/widgets/home_card_button.dart';
 import 'package:sge_flutter/modules/auth/cubit/auth_cubit.dart';
 import 'package:sge_flutter/modules/auth/cubit/auth_state.dart';
 
@@ -244,9 +244,9 @@ class _HomeContent extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A237E),
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        color: Color(0xFF1A237E),
+        borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32),
           bottomRight: Radius.circular(32),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:sge_flutter/shared/widgets/produto_card.dart';
+import 'package:sge_flutter/modules/estoque/widgets/produto_card.dart';
 import '../cubit/produto_cubit.dart';
 import '../cubit/produto_state.dart';
 

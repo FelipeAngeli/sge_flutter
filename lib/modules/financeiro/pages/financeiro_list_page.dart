@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:sge_flutter/shared/widgets/grafico_entradas_saidas.dart';
+import 'package:sge_flutter/modules/financeiro/widgets/grafico_entradas_saidas.dart';
 import '../../../models/movimento_financeiro_model.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../cubit/financeiro_cubit.dart';

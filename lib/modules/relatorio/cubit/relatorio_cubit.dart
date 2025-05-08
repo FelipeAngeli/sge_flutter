@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/services/produto_service.dart';
 import '../../relatorio/cubit/relatorio_state.dart';
-import '../../../shared/widgets/produtos_vendidos_card.dart';
+import '../widgets/produtos_vendidos_card.dart';
 
 class RelatorioCubit extends Cubit<RelatorioState> {
   final ProdutoService _service;

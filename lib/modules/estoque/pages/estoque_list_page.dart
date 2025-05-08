@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/produto/cubit/produto_cubit.dart';
 import 'package:sge_flutter/modules/produto/cubit/produto_state.dart';
-import 'package:sge_flutter/shared/widgets/produto_card.dart';
+import 'package:sge_flutter/modules/estoque/widgets/produto_card.dart';
 import 'package:sge_flutter/shared/widgets/primary_button.dart';
 
 class EstoqueListPage extends StatefulWidget {
