@@ -7,7 +7,6 @@ import 'package:sge_flutter/shared/widgets/primary_button.dart';
 import '../../../models/produto_model.dart';
 import '../cubit/produto_cubit.dart';
 import 'package:sge_flutter/core/storage/hive_config.dart';
-import 'package:sge_flutter/models/fornecedor_model.dart';
 
 class ProdutoFormPage extends StatefulWidget {
   const ProdutoFormPage({super.key});
@@ -111,8 +110,9 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                 controller: _quantidadeController,
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || value.isEmpty)
+                  if (value == null || value.isEmpty) {
                     return 'Campo obrigatório';
+                  }
                   if (int.tryParse(value) == null) return 'Apenas números';
                   return null;
                 },
@@ -125,8 +125,6 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
               const SizedBox(height: 16),
               CategoriaDropdown(controller: _categoriaController),
               const SizedBox(height: 16),
-
-              // 🔽 AJUSTADO: DROPDOWN DE FORNECEDOR COM NOME DA EMPRESA E CONTATO
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Fornecedor (Empresa / Contato)',
@@ -147,7 +145,6 @@ class _ProdutoFormPageState extends State<ProdutoFormPage> {
                 validator: (value) =>
                     value == null ? 'Selecione um fornecedor' : null,
               ),
-
               const SizedBox(height: 16),
               CustomTextField(
                 label: 'Vendas',
