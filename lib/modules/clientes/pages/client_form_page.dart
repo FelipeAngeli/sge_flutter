@@ -7,7 +7,6 @@ import 'package:sge_flutter/modules/clientes/cubits/cliente_state.dart';
 import 'package:sge_flutter/shared/widgets/primary_button.dart';
 import 'package:sge_flutter/shared/utils/input_formatters.dart';
 import 'package:sge_flutter/shared/widgets/custom_text_form_field.dart';
-
 import '../../../shared/utils/regex_helpers.dart';
 
 class ClienteFormPage extends StatefulWidget {
