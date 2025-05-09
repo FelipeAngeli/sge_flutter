@@ -9,6 +9,8 @@ import 'package:sge_flutter/modules/home/widgets/home_card_button.dart';
 import 'package:sge_flutter/modules/auth/cubit/auth_cubit.dart';
 import 'package:sge_flutter/modules/auth/cubit/auth_state.dart';
 
+import '../../../shared/widgets/app_logo.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -85,7 +87,12 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: const IconThemeData(color: Colors.white),
       title: Row(
         children: [
-          const Icon(Icons.business, size: 28, color: Colors.white),
+          const AppLogo(
+            size: 40,
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+          ),
           const SizedBox(width: 12),
           Flexible(
             child: Column(

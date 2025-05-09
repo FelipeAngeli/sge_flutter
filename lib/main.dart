@@ -9,13 +9,10 @@ import 'package:sge_flutter/core/storage/hive_config.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Carrega variáveis do arquivo .env
   await dotenv.load(fileName: '.env');
 
-  // Inicializa Hive
   await HiveConfig.start();
 
-  // Inicializa Supabase
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
