@@ -10,7 +10,6 @@ class VendaService {
   final ReciboService reciboService = Modular.get<ReciboService>();
   final Box<VendaModel> vendaBox = Hive.box<VendaModel>('vendas');
 
-  /// Finaliza a venda, registra no Hive e gera o recibo associado.
   Future<void> finalizarVenda({
     required ClienteModel cliente,
     required ProdutoModel produto,
@@ -27,7 +26,6 @@ class VendaService {
     );
 
     await vendaBox.put(venda.id, venda);
-    print('✅ Venda registrada: ${venda.id}');
 
     await reciboService.gerarRecibo(
       nomeEmpresa: 'Minha Empresa',
@@ -36,8 +34,6 @@ class VendaService {
       quantidade: quantidade,
       valorTotal: valorTotal,
     );
-
-    print('✅ Recibo gerado para venda ${venda.id}');
   }
 
   List<VendaModel> listarVendas() {

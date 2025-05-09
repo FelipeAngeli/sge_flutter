@@ -72,8 +72,6 @@ class FinanceiroService {
         .toList();
   }
 
-  // === Contas a Pagar e a Receber ===
-
   List<LancamentoModel> listarLancamentos() {
     return _lancamentoBox.values.toList();
   }

@@ -17,13 +17,10 @@ class CepService {
 
       return data;
     } on BadRequestException {
-      // Repassa exceção específica
       rethrow;
     } on ApiException {
-      // Repassa exceção do client
       rethrow;
     } catch (e) {
-      // Captura qualquer erro inesperado
       throw ApiException('Erro inesperado ao buscar CEP: $e');
     }
   }

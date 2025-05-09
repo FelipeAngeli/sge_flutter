@@ -15,17 +15,14 @@ import 'package:sge_flutter/models/venda_model.dart';
 
 class HiveConfig {
   static Future<void> start() async {
-    print('🔧 Inicializando Hive...');
     await Hive.initFlutter();
-
     _registerAdapters();
     await _openBoxes();
     await _populateMockData();
-    print('✅ Hive pronto!');
   }
 
   static Future<void> _clearBoxes() async {
-    final boxes = [
+    const boxes = [
       'produtos',
       'movimentos',
       'clientes',
@@ -37,12 +34,10 @@ class HiveConfig {
     ];
     for (final box in boxes) {
       await Hive.deleteBoxFromDisk(box);
-      print('🗑 Box $box limpo');
     }
   }
 
   static void _registerAdapters() {
-    print('📦 Registrando adapters...');
     if (!Hive.isAdapterRegistered(0))
       Hive.registerAdapter(ProdutoModelAdapter());
     if (!Hive.isAdapterRegistered(1))
@@ -61,7 +56,6 @@ class HiveConfig {
   }
 
   static Future<void> _openBoxes() async {
-    print('📦 Abrindo boxes...');
     await Hive.openBox<ProdutoModel>('produtos');
     await Hive.openBox<MovimentoFinanceiroModel>('movimentos');
     await Hive.openBox<ClienteModel>('clientes');
@@ -70,8 +64,6 @@ class HiveConfig {
     await Hive.openBox<FornecedorModel>('fornecedores');
     await Hive.openBox<ReciboModel>('recibos');
     await Hive.openBox<VendaModel>('vendas');
-    print('✔ Todos os boxes foram abertos');
-
     await _migrarFornecedoresAntigos();
   }
 
@@ -88,14 +80,12 @@ class HiveConfig {
   static Box<VendaModel> get vendaBox => Hive.box<VendaModel>('vendas');
 
   static Future<void> _populateMockData() async {
-    print('📦 Populando dados mock...');
     await _popularProdutosMock();
     await _popularMovimentacoesMock();
     await _popularClientesMock();
     await _popularLancamentosMock();
     await _popularFornecedoresMock();
     await _popularVendasMock();
-    print('✅ Mock data populado');
   }
 
   static Future<void> _popularProdutosMock() async {
@@ -104,9 +94,6 @@ class HiveConfig {
       for (var produto in produtos) {
         await produtoBox.put(produto.id, produto);
       }
-      print('✅ Mock de produtos criado!');
-    } else {
-      print('ℹ️ Produtos já estão populados');
     }
   }
 
@@ -116,9 +103,6 @@ class HiveConfig {
       for (var movimento in movimentos) {
         await movimentoBox.put(movimento.id, movimento);
       }
-      print('✅ Mock de movimentações criado!');
-    } else {
-      print('ℹ️ Movimentações já estão populadas');
     }
   }
 
@@ -128,9 +112,6 @@ class HiveConfig {
       for (var cliente in clientes) {
         await clienteBox.put(cliente.id, cliente);
       }
-      print('✅ Mock de clientes criado!');
-    } else {
-      print('ℹ️ Clientes já estão populados');
     }
   }
 
@@ -140,28 +121,19 @@ class HiveConfig {
       for (var lancamento in lancamentos) {
         await lancamentoBox.put(lancamento.id, lancamento);
       }
-      print('✅ Mock de lançamentos criado!');
-    } else {
-      print('ℹ️ Lançamentos já estão populados');
     }
   }
 
   static Future<void> _popularFornecedoresMock() async {
     if (fornecedorBox.isEmpty) {
       final produtos = produtoBox.values.toList();
-      if (produtos.isEmpty) {
-        print('⚠️ Nenhum produto encontrado para associar aos fornecedores');
-        return;
-      }
+      if (produtos.isEmpty) return;
 
       final fornecedores =
           FornecedoresMock.gerarFornecedoresComProdutos(produtos);
       for (var fornecedor in fornecedores) {
         await fornecedorBox.put(fornecedor.id, fornecedor);
       }
-      print('✅ Mock de fornecedores criado!');
-    } else {
-      print('ℹ️ Fornecedores já estão populados');
     }
   }
 
@@ -169,38 +141,28 @@ class HiveConfig {
     if (vendaBox.isEmpty) {
       final clientes = clienteBox.values.toList();
       final produtos = produtoBox.values.toList();
-      if (clientes.isEmpty || produtos.isEmpty) {
-        print('⚠️ Clientes ou produtos vazios para gerar vendas mock');
-        return;
-      }
+      if (clientes.isEmpty || produtos.isEmpty) return;
 
       for (int i = 0; i < 5; i++) {
         final cliente = clientes[i % clientes.length];
         final produto = produtos[i % produtos.length];
         final venda = VendaModel(
           id: 'venda_$i',
-          cliente: cliente.nome, // ✅ nome do cliente
-          produto: produto.nome, // ✅ nome do produto
+          cliente: cliente.nome,
+          produto: produto.nome,
           quantidade: i + 1,
           valorTotal: produto.preco * (i + 1),
           data: DateTime.now().toIso8601String(),
         );
         await vendaBox.put(venda.id, venda);
       }
-      print('✅ Mock de vendas criado!');
-    } else {
-      print('ℹ️ Vendas já estão populadas');
     }
   }
 
   static Future<void> _migrarFornecedoresAntigos() async {
-    print('🔄 Migrando fornecedores antigos...');
     for (var fornecedor in fornecedorBox.values) {
-      if (fornecedor.cnpj == null) {
-        fornecedor.cnpj = '';
-        await fornecedor.save();
-      }
+      fornecedor.cnpj = '';
+      await fornecedor.save();
     }
-    print('✅ Migração concluída!');
   }
 }

@@ -64,8 +64,8 @@ class _SplashPageState extends State<SplashPage>
               ScaleTransition(
                 scale: _animation,
                 child: Container(
-                  width: 280,
-                  height: 280,
+                  width: 180,
+                  height: 180,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -79,7 +79,7 @@ class _SplashPageState extends State<SplashPage>
                     ],
                   ),
                   child: const AppLogo(
-                    size: 240,
+                    size: 140,
                     margin: EdgeInsets.all(40),
                     alignment: Alignment.center,
                   ),
