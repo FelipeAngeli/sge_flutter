@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/auth/cubit/auth_cubit.dart';
-
 import '../../core/services/auth/auth_repository.dart';
 import 'pages/signin_page.dart';
 import 'pages/signup_page.dart';

@@ -17,6 +17,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -38,17 +39,12 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cadastro'),
-      ),
+      appBar: AppBar(title: const Text('Cadastro')),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          print('📱 Estado recebido na SignUpPage: $state');
           if (state is AuthSuccess) {
-            print('✅ Navegando para /login');
             Modular.to.navigate('/login');
           } else if (state is AuthFailure) {
-            print('❌ Erro: ${state.message}');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -58,6 +54,8 @@ class _SignUpPageState extends State<SignUpPage> {
           }
         },
         builder: (context, state) {
+          final isLoading = state is AuthLoading;
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Form(
@@ -68,12 +66,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomTextField(
                     controller: _nameController,
                     label: 'Nome completo',
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nome é obrigatório';
-                      }
-                      return null;
-                    },
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? 'Nome é obrigatório'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(
@@ -124,12 +119,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     label: 'CPF',
                     mask: '###.###.###-##',
                     keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'CPF é obrigatório';
-                      }
-                      return null;
-                    },
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? 'CPF é obrigatório'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   MaskedTextField(
@@ -137,35 +129,31 @@ class _SignUpPageState extends State<SignUpPage> {
                     label: 'Telefone',
                     mask: '(##) #####-####',
                     keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Telefone é obrigatório';
-                      }
-                      return null;
-                    },
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? 'Telefone é obrigatório'
+                        : null,
                   ),
                   const SizedBox(height: 24),
                   PrimaryButton(
-                    label:
-                        state is AuthLoading ? 'Cadastrando...' : 'Cadastrar',
-                    enabled: !(state is AuthLoading),
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        BlocProvider.of<AuthCubit>(context).signUp(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                          name: _nameController.text,
-                          cpf: _cpfController.text,
-                          phone: _phoneController.text,
-                        );
-                      }
-                    },
-                  ),
+                      label: isLoading ? 'Cadastrando...' : 'Cadastrar',
+                      enabled: !isLoading,
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          BlocProvider.of<AuthCubit>(context).signUp(
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                            confirmPassword:
+                                _confirmPasswordController.text.trim(),
+                            name: _nameController.text.trim(),
+                            cpf: _cpfController.text.trim(),
+                            phone: _phoneController.text.trim(),
+                          );
+                        }
+                      }),
                   const SizedBox(height: 16),
                   TextButton(
-                    onPressed: state is AuthLoading
-                        ? null
-                        : () => Modular.to.pushNamed('/login'),
+                    onPressed:
+                        isLoading ? null : () => Modular.to.pushNamed('/login'),
                     child: const Text('Já tem conta? Faça login'),
                   ),
                 ],
