@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/services/recibo_service.dart';
-import '../../../core/mock/recibos_mock.dart'; // Importante para o mock
+import '../../../core/mock/recibos_mock.dart';
 import '../../../shared/widgets/primary_button.dart';
 
 class ReciboPage extends StatelessWidget {
@@ -15,7 +15,7 @@ class ReciboPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reciboService = Modular.get<ReciboService>();
-    final reciboMock = RecibosMock.gerarMock(); // Aqui chamamos o mock gerado
+    final reciboMock = RecibosMock.gerarMock();
 
     return Scaffold(
       appBar: AppBar(

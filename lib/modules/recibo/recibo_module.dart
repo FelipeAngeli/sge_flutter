@@ -1,5 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import '../../core/services/recibo_service.dart';
+import 'package:sge_flutter/core/services/recibo_service.dart';
 import 'pages/recibo_page.dart';
 import 'pages/recibo_list_page.dart';
 
