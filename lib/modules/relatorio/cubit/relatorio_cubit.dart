@@ -13,24 +13,18 @@ class RelatorioCubit extends Cubit<RelatorioState> {
 
     try {
       final produtos = await _service.listarProdutos();
-
-      // Total de produtos em estoque (soma das quantidades)
       final int total = produtos.fold(0, (soma, p) => soma + p.estoque);
-
-      // Estoque por categoria
       final Map<String, int> categoriasMap = {};
       for (final p in produtos) {
         categoriasMap[p.categoria] =
             (categoriasMap[p.categoria] ?? 0) + p.estoque;
       }
 
-      // Vendas por produto
       final Map<String, int> vendasMap = {};
       for (final p in produtos) {
-        vendasMap[p.nome] = p.vendas ?? 0;
+        vendasMap[p.nome] = p.vendas;
       }
 
-      // Top 3 produtos mais vendidos
       final top3 = vendasMap.entries.toList()
         ..sort((a, b) => b.value.compareTo(a.value));
 
