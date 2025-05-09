@@ -1,4 +1,3 @@
-// lib/modules/home/cubit/home_state.dart
 abstract class HomeState {}
 
 class HomeInitial extends HomeState {}

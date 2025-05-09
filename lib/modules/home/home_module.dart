@@ -1,4 +1,3 @@
-// lib/modules/home/home_module.dart
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:sge_flutter/modules/home/pages/home_page.dart';
 import 'package:sge_flutter/modules/home/cubit/home_cubit.dart';

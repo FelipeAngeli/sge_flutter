@@ -1,4 +1,3 @@
-// lib/shared/widgets/custom_loading_indicator.dart
 import 'package:flutter/material.dart';
 
 class CustomLoadingIndicator extends StatelessWidget {

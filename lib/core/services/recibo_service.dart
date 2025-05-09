@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:typed_data';
 import '../../models/recibo_model.dart';
@@ -55,7 +54,6 @@ class ReciboService {
     return pdf.save();
   }
 
-  // 🔥 Método mock fixo para testes
   Future<Uint8List> gerarReciboPdfMock() async {
     final mock = RecibosMock.gerarMock();
     return gerarReciboPdf(
