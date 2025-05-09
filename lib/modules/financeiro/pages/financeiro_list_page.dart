@@ -6,6 +6,7 @@ import '../../../models/movimento_financeiro_model.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../cubit/financeiro_cubit.dart';
 import '../cubit/financeiro_state.dart';
+import '../widgets/resumo_card.dart';
 
 class FinanceiroListPage extends StatelessWidget {
   const FinanceiroListPage({super.key});
@@ -32,19 +33,19 @@ class FinanceiroListPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _ResumoCard(
+                  ResumoCard(
                     titulo: 'Valor Total em Estoque',
                     valor: state.totalEstoque,
                     cor: Colors.blue,
                   ),
                   const SizedBox(height: 16),
-                  _ResumoCard(
+                  ResumoCard(
                     titulo: 'Entradas (7 dias)',
                     valor: state.totalEntradas,
                     cor: Colors.green,
                   ),
                   const SizedBox(height: 16),
-                  _ResumoCard(
+                  ResumoCard(
                     titulo: 'Saídas (7 dias)',
                     valor: state.totalSaidas,
                     cor: Colors.red,
@@ -132,38 +133,5 @@ class FinanceiroListPage extends StatelessWidget {
     return '${data.day.toString().padLeft(2, '0')}/'
         '${data.month.toString().padLeft(2, '0')}/'
         '${data.year}';
-  }
-}
-
-class _ResumoCard extends StatelessWidget {
-  final String titulo;
-  final double valor;
-  final Color cor;
-
-  const _ResumoCard({
-    required this.titulo,
-    required this.valor,
-    required this.cor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: cor.withOpacity(0.1),
-      child: ListTile(
-        title: Text(
-          titulo,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        trailing: Text(
-          'R\$ ${valor.toStringAsFixed(2)}',
-          style: TextStyle(
-            color: cor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
   }
 }
