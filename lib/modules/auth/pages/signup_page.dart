@@ -172,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            Modular.to.navigate('/login');
+            Modular.to.navigate('/home');
           } else if (state is AuthValidationError) {
             // Atualiza as mensagens de erro baseado no estado
             final errors = <String, String>{};
