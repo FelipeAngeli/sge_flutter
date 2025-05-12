@@ -1,0 +1,41 @@
+name: Flutter Build APK
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout o código
+        uses: actions/checkout@v3
+
+      - name: 🧰 Configurar o Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          cache: true
+
+      - name: 📦 Instalar dependências
+        run: flutter pub get
+
+      - name: 💡 Analisar código (opcional)
+        run: flutter analyze
+
+      - name: 🏗️ Build APK (modo release)
+        run: flutter build apk --release
+
+      - name: 📦 Upload APK como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
