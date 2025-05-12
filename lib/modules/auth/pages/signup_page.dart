@@ -257,17 +257,29 @@ class _SignUpPageState extends State<SignUpPage> {
                   PrimaryButton(
                     label: isLoading ? 'Cadastrando...' : 'Cadastrar',
                     enabled: !isLoading,
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        BlocProvider.of<AuthCubit>(context).signUp(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
-                          confirmPassword:
-                              _confirmPasswordController.text.trim(),
-                          name: _nameController.text.trim(),
-                          cpf: _cpfController.text.trim(),
-                          phone: _phoneController.text.trim(),
-                        );
+                        try {
+                          await BlocProvider.of<AuthCubit>(context).signUp(
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                            confirmPassword:
+                                _confirmPasswordController.text.trim(),
+                            name: _nameController.text.trim(),
+                            cpf: _cpfController.text.trim(),
+                            phone: _phoneController.text.trim(),
+                          );
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Erro ao realizar cadastro: ${e.toString()}'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
                       }
                     },
                   ),

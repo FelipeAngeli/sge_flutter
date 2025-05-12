@@ -26,7 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String cpf,
     required String phone,
   }) async {
-    emit(const AuthLoading());
+    _safeEmit(const AuthLoading());
 
     final errors = _validateSignUpForm(
       name: name,
