@@ -6,6 +6,12 @@ Sistema de Gestão Empresarial desenvolvido em Flutter, utilizando arquitetura M
 
 Este é um projeto MVP (Minimum Viable Product) de um Sistema de Gestão Empresarial, desenvolvido com Flutter para oferecer uma experiência multiplataforma. O sistema foi construído com foco em escalabilidade, manutenibilidade e boas práticas de desenvolvimento.
 
+
+https://github.com/user-attachments/assets/910dedea-88dd-42a1-8ab7-0ab90f372cc5
+
+
+
+
 ## 🏗️ Arquitetura
 
 O projeto segue a arquitetura MVVM (Model-View-ViewModel), que oferece uma clara separação de responsabilidades:
