@@ -26,7 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String cpf,
     required String phone,
   }) async {
-    emit(AuthLoading());
+    emit(const AuthLoading());
 
     final errors = _validateSignUpForm(
       name: name,
@@ -184,5 +184,22 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     return true;
+  }
+
+  // Métodos públicos para validação
+  bool isValidEmail(String email) {
+    return _isValidEmail(email);
+  }
+
+  bool isValidPassword(String password) {
+    return _isValidPassword(password);
+  }
+
+  bool isValidPhone(String phone) {
+    return _isValidPhone(phone);
+  }
+
+  bool isValidCPF(String cpf) {
+    return _isValidCPF(cpf);
   }
 }
