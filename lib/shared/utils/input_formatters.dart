@@ -1,4 +1,9 @@
 import 'package:flutter/services.dart';
+import 'regex.dart';
+
+final cpfCnpjRegex = RegexPatterns.cpfCnpj;
+final emailRegex = RegexPatterns.email;
+final phoneRegex = RegexPatterns.telefone;
 
 class CepInputFormatter extends TextInputFormatter {
   @override
@@ -24,7 +29,3 @@ class CepInputFormatter extends TextInputFormatter {
     );
   }
 }
-
-final RegExp cpfCnpjRegex = RegExp(r'^(\d{11}|\d{14})$');
-final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-final RegExp phoneRegex = RegExp(r'^\d{10,11}$');

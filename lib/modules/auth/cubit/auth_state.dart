@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'auth_cubit.dart';
 
 abstract class AuthState extends Equatable {
   const AuthState();
@@ -29,10 +30,10 @@ class AuthFailure extends AuthState {
 }
 
 class AuthValidationError extends AuthState {
-  final String message;
+  final Map<String, ValidationErrorType> errors;
 
-  const AuthValidationError(this.message);
+  const AuthValidationError(this.errors);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errors];
 }

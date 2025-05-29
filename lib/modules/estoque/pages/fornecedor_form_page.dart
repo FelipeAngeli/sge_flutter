@@ -84,9 +84,10 @@ class _FornecedorFormPageState extends State<FornecedorFormPage> {
                   CnpjInputFormatter(),
                 ],
                 validator: (value) {
-                  final digits = value!.replaceAll(RegExp(r'\D'), '');
-                  if (digits.isEmpty) return 'Campo obrigatório';
-                  if (!RegexHelpers.isValidCpfCnpj(digits)) {
+                  if (value == null || value.isEmpty) {
+                    return 'Campo obrigatório';
+                  }
+                  if (!RegexHelpers.isValidCpfCnpj(value)) {
                     return 'CNPJ inválido (14 dígitos)';
                   }
                   return null;
@@ -110,9 +111,10 @@ class _FornecedorFormPageState extends State<FornecedorFormPage> {
                   TelefoneInputFormatter(),
                 ],
                 validator: (value) {
-                  final digits = value!.replaceAll(RegExp(r'\D'), '');
-                  if (digits.isEmpty) return 'Campo obrigatório';
-                  if (!RegexHelpers.isValidTelefone(digits)) {
+                  if (value == null || value.isEmpty) {
+                    return 'Campo obrigatório';
+                  }
+                  if (!RegexHelpers.isValidTelefone(value)) {
                     return 'Telefone inválido (Ex.: 48999999999)';
                   }
                   return null;
